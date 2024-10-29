@@ -12,18 +12,19 @@
 </head>
 <body>
 
-
-    <form class ="form_login" action="/action_page.php">
-    <label for="fname">Primer nombre:</label><br>
-    <input type="text" id="fname" name="fname" placeholder="Nombre"><br>
-    <label for="lname">Apellidos:</label><br>
-    <input type="text" id="lname" name="lname" placeholder="Apellidos"><br>
-    <label for="lname">DNI:</label><br>
-    <input type="text" id="lname" name="lname" placeholder="DNI"><br>
-    <label for="lname">Correo/gmail:</label><br>
-    <input type="text" id="lname" name="lname" placeholder="correo"><br><br>
-    <input type="submit" value="Submit">
-    </form> 
+    <div class="login">
+        <form class ="form_login" action="/action_page.php">
+            <label for="fname">Primer nombre:</label><br>
+            <input type="text" id="fname" name="fname" placeholder="Nombre"><br>
+            <label for="lname">Apellidos:</label><br>
+            <input type="text" id="lname" name="lname" placeholder="Apellidos"><br>
+            <label for="lname">DNI:</label><br>
+            <input type="text" id="lname" name="lname" placeholder="DNI"><br>
+            <label for="lname">Correo/gmail:</label><br>
+            <input type="text" id="lname" name="lname" placeholder="correo"><br><br>
+            <input type="submit" value="Submit">
+        </form> 
+    </div>
     
 </body>
 </html>

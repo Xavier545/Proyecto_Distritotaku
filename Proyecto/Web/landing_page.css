@@ -1,0 +1,139 @@
+
+
+
+body {
+    background-image:url(../imagenes_web/fondo_landing_page.png);
+    background-size: cover; /* La imagen cubrirá toda la pantalla */
+    background-position: center; /* Centra la imagen en la pantalla */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Asegura que el body tome el 100% de la altura de la pantalla */
+}
+
+
+.landing_page_centro {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.logo {
+    max-width: 100%;
+    height: auto;
+}
+
+.divlogin {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.login {
+    background-color: #2e518b;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login:hover {
+    background-color: #5b78a7;
+}
+
+/*---------------------menu-----------------------*/
+.menu {
+    position: fixed;
+    border-radius:10px;
+    top: 0;
+    left: 0;
+    z-index: 1000; 
+    margin: 0;
+    padding: 0;
+}
+
+
+#menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+#menu > ul > li:not(:first-child) {
+    display: none;
+}
+
+
+#menu > ul > li:first-child {
+    background-color: #2e518b;
+    color: #fff;
+}
+
+
+#menu ul a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 15px;
+    padding: 10px;
+    font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+
+#menu > ul > li:first-child:hover ul {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #2e518b;
+    width: 150px;
+    padding: 0;
+}
+
+
+#menu ul ul li {
+    display: block;
+    width: 100%;
+}
+
+
+#menu ul ul a {
+    line-height: 120%;
+    padding: 10px 15px;
+}
+
+
+#menu ul ul li:hover {
+    background: #5b78a7;
+}
+
+
+#menu ul ul {
+    display: none;
+}
+
+
+/*hacer un hover de menu desplegable:
+@keyframes menu:hover {
+    aumentar tamaño del menu
+  }
+*/
+
+/*-----------------form_login------------*/
+
+
+.form_login{
+    
+    align-items: center;
+}

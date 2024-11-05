@@ -1,5 +1,8 @@
 <?php 
 
+session_start();
+
+
 
 ?>
 
@@ -21,7 +24,11 @@
                 <li><a href="#">Menú</a>
                     <!-- Start menú desplegable -->
                     <ul>
-                        <li><a href="#">Usuarios</a></li>
+                        <?php if (isset($_SESSION['nombre'])):  ?>
+                            <li style="display: block">
+                                <a href="#"><?php echo htmlspecialchars($_SESSION['nombre']);?></a>
+                            </li>
+                        <?php endif; ?>
                         <li><a href="#">Productos</a></li>
                         
                     </ul>

@@ -3,15 +3,15 @@ session_start();
 
 
 
-$n = "adrian";
+$n = "pepito";
 $p = "123";
-
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     $nombre = htmlspecialchars($_REQUEST['nombre']);
     $psswd = htmlspecialchars($_REQUEST['contrasenya']);
-
+    
     if($nombre == $n && $psswd == $p){
+        $_SESSION ['nombre']= $nombre; 
         header('Location: landing_page.php');
     }
 

@@ -2,7 +2,7 @@ FROM php:apache
 RUN apt update && pecl install xdebug && docker-php-ext-install pdo && docker-php-ext-enable xdebug pdo  
 RUN docker-php-ext-install mysqli pdo_mysql && docker-php-ext-enable mysqli pdo_mysql 
 RUN apt-get install -y libpq-dev && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql && docker-php-ext-install pgsql pdo_pgsql
-RUN echo "[xdebug]\nxdebug.mode=develop,debug\nxdebug.client_host=192.168.1.149\nxdebug.start_with_request=yes\nxdebug.log=/tmp/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "[xdebug]\nxdebug.mode=develop,debug\nxdebug.client_host=192.168.56.1\nxdebug.start_with_request=yes\nxdebug.log=/tmp/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "error_reporting=E_ALL" > /usr/local/etc/php/conf.d/error_reporting.ini
 EXPOSE 80
 

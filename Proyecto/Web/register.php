@@ -18,6 +18,8 @@ session_start();
             <input type="text" id="nombre" name="nombre" placeholder="Nombre"><br>
             <label for="lname">Apellidos:</label><br>
             <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos"><br>
+            <label for="fname">Nombre de usuario:</label><br>
+            <input type="text" id="usuario" name="usuario" placeholder="Nombre"><br>
             <label for="lname">DNI:</label><br>
             <input type="text" id="dni" name="dni" placeholder="DNI"><br>
             <label for="lname">Correo/gmail:</label><br>

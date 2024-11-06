@@ -1,5 +1,3 @@
-
-
 body {
     background-image:url(../imagenes_web/fondo_login.png);
     background-size: cover; /* La imagen cubrirá toda la pantalla */
@@ -35,3 +33,4 @@ body {
 .form_login input{
     margin: 15px;
 }
+

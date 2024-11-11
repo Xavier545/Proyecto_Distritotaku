@@ -1,63 +1,85 @@
 <?php 
 session_start();
 
+// Conexión a la base de datos
+$servername = "db";
+$username = "mysql";
+$password = "mysecret";
+$dbname = "mydb";
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-
-$n = "pepito";
-$p = "123";
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-
-    $nombre = htmlspecialchars($_REQUEST['nombre']);
-    $psswd = htmlspecialchars($_REQUEST['contrasenya']);
-    
-    if($nombre == $n && $psswd == $p){
-        $_SESSION ['nombre']= $nombre; 
-        header('Location: landing_page.php');
-    }
-
-
-/************* PENDIENTE */
-/* Falta validar con BBDD */
-
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
+// Crear la tabla USER si no existe
+$sql = "CREATE TABLE IF NOT EXISTS USER (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(30) NOT NULL,
+    lastname VARCHAR(30) NOT NULL,
+    email VARCHAR(50)
+);";
+$conn->query($sql);
 
+// Insertar usuarios si la tabla está vacía
+$sql = "SELECT * FROM USER;";
+$result = $conn->query($sql);
+if ($result->num_rows == 0) {
+    $users = [
+        ["LUIS JORGE", "BARRACHINA BUESO", "lbarra@gmail.com"],
+        ["CARLOS ANTONIO", "EGEA HERNANDEZ", "cegea@gmail.com"],
+        ["CESAR LUIS", "BLASCO ESCUREDO", "cblasco@gmail.com"],
+        ["MANUEL", "GARCIA GIRONA", "mgarcia@gmail.com"],
+        ["ADOLFO", "VIDAGANY GISBERT", "avida@gmail.com"]
+    ];
+    
+    foreach ($users as $user) {
+        $sql = "INSERT INTO USER (firstname, lastname, email) 
+                VALUES ('" . $user[0] . "', '" . $user[1] . "', '" . $user[2] . "');";
+        $conn->query($sql);
+    }
+}
+
+// Manejar el inicio de sesión
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nombre = htmlspecialchars($_REQUEST['nombre']);
+    $apellido = htmlspecialchars($_REQUEST['apellido']);
+
+    // Consulta para buscar al usuario por nombre y apellido
+    $sql = "SELECT * FROM USER WHERE firstname = ? AND lastname = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $nombre, $apellido);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Verificar si el usuario existe
+    if ($result->num_rows > 0) {
+        $_SESSION['nombre'] = $nombre . ' ' . $apellido;
+        header('Location: landing_page.php');
+        exit();
+    } else {
+        echo "Usuario no encontrado.";
+    }
+    $stmt->close();
+}
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="login.css">
-    <title>Document</title>
+    <title>Login</title>
 </head>
 <body>
-
-    <div class="login">
-        <form class ="form_login" method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" >
-            <label for="fname">Nombre  de usuario:</label><br>
-            <input type="text" id="nombre" name="nombre" placeholder="Nombre"><br>
-            <label for="lname">Contraseña</label><br>
-            <input type="password" id="contrasenya" name="contrasenya" placeholder="****"><br>
-            <?php
-            if(empty($nombre) || empty($psswd)){
-                echo'<p style="color:#ff0000">alguno de los campos está vacío</p>'; //
-            }elseif($nombre != $n || $psswd != $p){
-                echo'<p style="color:#ff0000">alguna de las credenciales es incorrecta</p>';
-            }
-            
-            ?>
-            <input type="submit" value="Submit"><br>
-            <a class="registrarse" href="register.php">No tienes cuenta? Regístrate</a>
-        </form>
-    </div>
+    <form method="POST" action="">
+        Nombre: <input type="text" name="nombre" required><br>
+        Apellido: <input type="text" name="apellido" required><br>
+        <input type="submit" value="Iniciar Sesión">
+    </form>
 </body>
 </html>
 
-
-<?php
-
-
-
-?>

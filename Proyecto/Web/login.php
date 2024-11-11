@@ -1,7 +1,7 @@
 <?php 
 session_start();
 
-// Conexión a la base de datos
+
 $servername = "db";
 $username = "mysql";
 $password = "mysecret";
@@ -40,15 +40,15 @@ if ($result->num_rows == 0) {
     }
 }
 
-// Manejar el inicio de sesión
+// Recojo los datos del form
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = htmlspecialchars($_REQUEST['nombre']);
     $apellido = htmlspecialchars($_REQUEST['apellido']);
 
-    // Consulta para buscar al usuario por nombre y apellido
+    // Reviso la tabla de la bbdd
     $sql = "SELECT * FROM USER WHERE firstname = ? AND lastname = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $nombre, $apellido);
+    $stmt->bind_param("ss", $nombre, $apellido); //le doy lo que he recogido del form
     $stmt->execute();
     $result = $stmt->get_result();
 

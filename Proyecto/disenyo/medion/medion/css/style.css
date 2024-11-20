@@ -268,12 +268,15 @@ a:focus {
 
 .slider_section .detail-box h1 span {
   font-size: 4rem;
-  color: #ffffff;
+  color: #030303;
   font-weight: bold;
 }
 
 .slider_section .detail-box p {
   color: #ffffff;
+  border-radius: 10px;
+  background-color: black;
+  padding: 10px;
 }
 
 .slider_section .detail-box a {

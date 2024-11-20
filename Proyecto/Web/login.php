@@ -17,7 +17,7 @@ $sql = "CREATE TABLE IF NOT EXISTS USER (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     firstname VARCHAR(30) NOT NULL,
     lastname VARCHAR(30) NOT NULL,
-    email VARCHAR(50)
+    pw VARCHAR(50) NOT NULL
 );";
 $conn->query($sql);
 
@@ -26,15 +26,14 @@ $sql = "SELECT * FROM USER;";
 $result = $conn->query($sql);
 if ($result->num_rows == 0) {
     $users = [
-        ["LUIS JORGE", "BARRACHINA BUESO", "lbarra@gmail.com"],
-        ["CARLOS ANTONIO", "EGEA HERNANDEZ", "cegea@gmail.com"],
-        ["CESAR LUIS", "BLASCO ESCUREDO", "cblasco@gmail.com"],
-        ["MANUEL", "GARCIA GIRONA", "mgarcia@gmail.com"],
-        ["ADOLFO", "VIDAGANY GISBERT", "avida@gmail.com"]
+        ["carcaj", "7", "cisco"],
+        ["grubusp", "8", "cisco"],
+        ["Lyra", "Ventis", "cisco"],
+        ["Kaox", "Sketch", "cisco"]
     ];
     
     foreach ($users as $user) {
-        $sql = "INSERT INTO USER (firstname, lastname, email) 
+        $sql = "INSERT INTO USER (firstname, lastname, pw) 
                 VALUES ('" . $user[0] . "', '" . $user[1] . "', '" . $user[2] . "');";
         $conn->query($sql);
     }
@@ -43,18 +42,18 @@ if ($result->num_rows == 0) {
 // Recojo los datos del form
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = htmlspecialchars($_REQUEST['nombre']);
-    $apellido = htmlspecialchars($_REQUEST['apellido']);
+    $pw = htmlspecialchars($_REQUEST['pw']);
 
     // Reviso la tabla de la bbdd
-    $sql = "SELECT * FROM USER WHERE firstname = ? AND lastname = ?";
+    $sql = "SELECT * FROM USER WHERE firstname = ? AND pw = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $nombre, $apellido); //le doy lo que he recogido del form
+    $stmt->bind_param("ss", $nombre, $pw); //le doy lo que he recogido del form
     $stmt->execute();
     $result = $stmt->get_result();
 
     // Verificar si el usuario existe
     if ($result->num_rows > 0) {
-        $_SESSION['nombre'] = $nombre . ' ' . $apellido;
+        $_SESSION['nombre'] = $nombre /* ' ' . $pw*/;
         header('Location: landing_page.php');
         exit();
     } else {
@@ -77,7 +76,7 @@ $conn->close();
 <body>
     <form method="POST" action="">
         Nombre: <input type="text" name="nombre" required><br>
-        Apellido: <input type="text" name="apellido" required><br>
+        Contraseña: <input type="password" name="pw" required><br>
         <input type="submit" value="Iniciar Sesión">
     </form>
 </body>

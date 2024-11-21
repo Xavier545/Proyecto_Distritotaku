@@ -24,9 +24,9 @@ session_start();
                 <li><a href="#">Menú</a>
                     <!-- Start menú desplegable -->
                     <ul>
-                        <?php if (isset($_SESSION['nombre'])):  ?>
+                        <?php if (isset($_SESSION['nickname'])):  ?>
                             <li style="display: block">
-                                <a href="#"><?php echo htmlspecialchars($_SESSION['nombre']);?></a>
+                                <a href="#"><?php echo htmlspecialchars($_SESSION['nickname']);?></a>
                             </li>
                         <?php endif; ?>
                         <li><a href="#">Productos</a></li>

@@ -19,7 +19,6 @@ $sql = "CREATE TABLE IF NOT EXISTS USER (
     firstname VARCHAR(30) NOT NULL,
     lastname VARCHAR(30) NOT NULL,
     nickname VARCHAR(30) NOT NULL,
-    prueba VARCHAR(30) NOT NULL,
     pw VARCHAR(50) NOT NULL
 );";
 $conn->query($sql);

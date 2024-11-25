@@ -1,60 +1,70 @@
 <?php 
 session_start();
+
+$servername = "db";
+$username = "mysql";
+$password = "mysecret";
+$dbname = "mydb";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Procesar el formulario
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $firstname = htmlspecialchars($_POST['firstname']);
+    $lastname = htmlspecialchars($_POST['lastname']);
+    $nickname = htmlspecialchars($_POST['nickname']);
+    $pw = htmlspecialchars($_POST['pw']);
+
+    // Verificar si el nickname ya existe
+    $sql = "SELECT * FROM USER WHERE nickname = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $nickname);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        echo "El nickname ya existe. Por favor, elige otro.";
+    } else {
+        // Insertar nuevo usuario
+        $sql = "INSERT INTO USER (firstname, lastname, nickname, pw) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssss", $firstname, $lastname, $nickname, $pw);
+        
+        if ($stmt->execute()) {
+            // Redirigir al login después de registrar
+            header('Location: login.php');
+            exit();
+        } else {
+            echo "Error al registrar el usuario: " . $stmt->error;
+        }
+    }
+
+    $stmt->close();
+}
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="login.css">
-    <title>Document</title>
+    <title>Registro</title>
 </head>
 <body>
-
-    <div class="login">
-        <form class ="form_login" method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" >
-            <label for="fname">Primer nombre:</label><br>
-            <input type="text" id="nombre" name="nombre" placeholder="Nombre"><br>
-            <label for="lname">Apellidos:</label><br>
-            <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos"><br>
-            <label for="fname">Nombre de usuario:</label><br>
-            <input type="text" id="usuario" name="usuario" placeholder="Nombre"><br>
-            <label for="lname">DNI:</label><br>
-            <input type="text" id="dni" name="dni" placeholder="DNI"><br>
-            <label for="lname">Correo/gmail:</label><br>
-            <input type="text" id="correo" name="correo" placeholder="correo"><br><br>
-            <label for="lname">Contraseña</label><br>
-            <input type="password" id="contrasenya" name="contrasenya" placeholder="****"><br><br>
-            <input type="submit" value="Submit">
-        </form> 
-    </div>
-    
+    <h1>Registro de Usuario</h1>
+    <form method="POST" action="">
+        Nombre: <input type="text" name="firstname" required><br>
+        Apellido: <input type="text" name="lastname" required><br>
+        Nickname: <input type="text" name="nickname" required><br>
+        Contraseña: <input type="password" name="pw" required><br>
+        <input type="submit" value="Registrar">
+    </form>
 </body>
 </html>
-
-<?php 
-
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-
-    $nombre = htmlspecialchars($_REQUEST['nombre']);
-    $apellidos = htmlspecialchars($_REQUEST['apellidos']);
-    $dni = htmlspecialchars($_REQUEST['dni']);
-    $correo = htmlspecialchars($_REQUEST['correo']);
-    
-    $psswd = htmlspecialchars($_REQUEST['contrasenya']);
-
-    if(empty($nombre) || empty($apellidos) || empty($dni) || empty($correo)){
-        echo 'alguno de los campos está vacío'; //
-    }else{
-        echo''.$nombre.''.$apellidos.''.$dni.''.$correo.''.$psswd.'';
-    }
-
-    
-/************* PENDIENTE */
-/* Falta validar con BBDD */
-
-}
-
-
-?>

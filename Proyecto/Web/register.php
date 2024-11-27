@@ -27,7 +27,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        echo "El nickname ya existe. Por favor, elige otro.";
+      echo "<script>
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...!',
+                text: 'El usuario ya existe',  
+                })
+              window.location= 'landing_page.php'
+            </script>"; 
     } else {
         // Insertar nuevo usuario
         $sql = "INSERT INTO USER (firstname, lastname, nickname, pw) VALUES (?, ?, ?, ?)";
@@ -54,6 +61,7 @@ $conn->close();
 <html>
 
 <head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- Basic -->
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -63,7 +71,7 @@ $conn->close();
   <meta name="keywords" content="" />
   <meta name="description" content="" />
   <meta name="author" content="" />
-
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <title>Medion</title>
 
   <!-- slider stylesheet -->
@@ -106,7 +114,7 @@ $conn->close();
       </div>
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="landing_page.php">
             <img src="images/logo.png" alt="">
             <span>
               Medion
@@ -121,7 +129,7 @@ $conn->close();
             <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
               <ul class="navbar-nav  ">
                 <li class="nav-item active">
-                  <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="about.html"> About </a>
@@ -144,7 +152,7 @@ $conn->close();
                 <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
               </form>
               <div class="login_btn-contanier ml-0 ml-lg-5">
-                <a href="login.html">
+                <a href="login.php">
                   <img src="images/user.png" alt="">
                   <span>
                     Login
@@ -195,7 +203,7 @@ $conn->close();
                             <label for="pw">Contraseña</label>
                             <input type="password" class="form-control" name="pw" id="pw" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <button type="submit" id="registrar" class="btn btn-primary">Registrar</button>
                     </form>
                 </div>
             </div>
@@ -255,7 +263,7 @@ $conn->close();
             </h4>
             <ul class="navbar-nav  ">
               <li class="nav-item active">
-                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="about.html"> About </a>
@@ -345,7 +353,7 @@ $conn->close();
       }
     });
   </script>
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
    <script>
        $("#registerForm").on("submit", function (e) {
            e.preventDefault(); // Evitar recarga de página
@@ -369,6 +377,8 @@ $conn->close();
            });
        });
    </script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 
 </html>

@@ -108,23 +108,10 @@ $conn->close();
   <div class="hero_area">
     <!-- header section strats -->
     <header class="header_section">
-      <div class="container">
-        <div class="top_contact-container">
-          <div class="tel_container">
-            <a href="">
-              <img src="images/telephone-symbol-button.png" alt=""> Call : +34 673373751
-            </a>
-          </div>
-          <div class="social-container">
-            <a href="">
-              <img src="images/instagram.png" alt="" class="s-3">
-            </a>
-          </div>
-        </div>
-      </div>
+      
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="landing_page.php">
             <img src="images/logo.png" alt="">
             <span>
               Medion
@@ -139,7 +126,7 @@ $conn->close();
             <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
               <ul class="navbar-nav  ">
                 <li class="nav-item active">
-                  <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="about.html"> About </a>
@@ -260,6 +247,16 @@ $conn->close();
                 </h6>
               </div>
             </div>
+            <div class="box">
+              <div class="img-box">
+                <img src="images/instagram.png" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  Instagram
+                </h6>
+              </div>
+            </div>
           </div>
         </div>
         <div class="col-md-3">
@@ -269,7 +266,7 @@ $conn->close();
             </h4>
             <ul class="navbar-nav  ">
               <li class="nav-item active">
-                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="about.html"> About </a>
@@ -372,7 +369,7 @@ $conn->close();
                    const res = JSON.parse(response);
                    if (res.status === "success") {
                        alert(res.message);
-                       window.location.href = "index.html"; // Redirigir si es exitoso
+                       window.location.href = "landing_page.php"; // Redirigir si es exitoso
                    } else {
                        alert(res.message);
                    }

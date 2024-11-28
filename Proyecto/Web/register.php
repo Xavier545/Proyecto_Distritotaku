@@ -98,20 +98,7 @@ $conn->close();
   <div class="hero_area">
     <!-- header section strats -->
     <header class="header_section">
-      <div class="container">
-        <div class="top_contact-container">
-          <div class="tel_container">
-            <a href="">
-              <img src="images/telephone-symbol-button.png" alt=""> Call : +34 673373751
-            </a>
-          </div>
-          <div class="social-container">
-            <a href="">
-              <img src="images/instagram.png" alt="" class="s-3">
-            </a>
-          </div>
-        </div>
-      </div>
+      
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
           <a class="navbar-brand" href="landing_page.php">
@@ -251,6 +238,16 @@ $conn->close();
               <div class="detail-box">
                 <h6>
                   demo@gmail
+                </h6>
+              </div>
+            </div>
+            <div class="box">
+              <div class="img-box">
+                <img src="images/instagram.png" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  Instagram
                 </h6>
               </div>
             </div>

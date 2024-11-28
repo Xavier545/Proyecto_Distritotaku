@@ -55,7 +55,7 @@ session_start();
     <header class="header_section">
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="landing_page.php">
             <img src="images/logo.png" alt="">
             <span>
               Medion
@@ -70,7 +70,7 @@ session_start();
             <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
               <ul class="navbar-nav  ">
                 <li class="nav-item active">
-                  <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="about.html"> About </a>
@@ -94,8 +94,14 @@ session_start();
                    
                         <a href="#"><?php echo htmlspecialchars($_SESSION['nickname']);?></a>
                     
-                <?php endif; ?>
-
+                <?php else: ?>
+                <a href="login.php">
+                  <img src="images/user.png" alt="">
+                  <span>
+                    Login
+                  </span>
+                  <?php endif; ?>
+                </a>
               </div>
             </div>
           </div>
@@ -226,7 +232,7 @@ session_start();
       <div class="feature_container">
         <div class="box">
           <div class="img-box">
-            
+            <img src = images/icono_db.png width="73" height="73">
             <!--<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
               x="0px" y="0px" viewBox="0 0 422.518 422.518" style="enable-background:new 0 0 422.518 422.518;"
               xml:space="preserve">
@@ -291,7 +297,8 @@ session_start();
         </div>
         <div class="box">
           <div class="img-box">
-            <svg id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512"
+          <img src = images/icono_one_piece.png width="73" height="73">
+            <!--<svg id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512"
               xmlns="http://www.w3.org/2000/svg">
               <path
                 d="m471.728 84.718h-431.456c-22.206 0-40.272 18.066-40.272 40.272v243.623 18.395.005c0 22.205 18.064 40.27 40.27 40.27h431.46c22.205 0 40.27-18.065 40.27-40.27v-.005-18.395-243.623c0-22.206-18.066-40.272-40.272-40.272zm-431.456 20h431.455c11.179 0 20.272 9.094 20.272 20.272v233.623h-294.622c-5.522 0-10 4.477-10 10s4.478 10 10 10h294.623v8.395c0 11.178-9.094 20.272-20.272 20.272h-431.456c-11.178 0-20.272-9.094-20.272-20.273v-8.395h89.418c5.522 0 10-4.477 10-10s-4.478-10-10-10h-89.418v-233.622c0-11.178 9.094-20.272 20.272-20.272z" />
@@ -311,7 +318,7 @@ session_start();
                 d="m79.072 319.081h140.993c5.522 0 10-4.477 10-10v-39.955-114.582c0-5.523-4.478-10-10-10h-140.993c-5.522 0-10 4.477-10 10v114.583 39.955c0 5.522 4.478 9.999 10 9.999zm130.993-20h-120.993v-28.724c.03-.113.06-.227.091-.339 4.169-15.41 18.521-26.172 34.902-26.172h51.008c16.38 0 30.732 10.763 34.902 26.169.03.113.061.226.09.339zm-81.794-96.534c0-11.744 9.554-21.298 21.298-21.298s21.298 9.554 21.298 21.298-9.554 21.298-21.298 21.298-21.298-9.554-21.298-21.298zm81.794 33.371c-7.335-5.755-16.118-9.714-25.618-11.298 4.058-6.39 6.42-13.958 6.42-22.073 0-17.041-10.376-31.702-25.14-38.003h44.339v71.374zm-76.653-71.374c-14.765 6.301-25.14 20.963-25.14 38.003 0 8.114 2.362 15.683 6.42 22.073-9.501 1.583-18.285 5.543-25.619 11.298v-71.374z" />
               <path
                 d="m159.66 360.3c-7.549-5.03-17.605 2.261-15.18 10.977 1.142 4.104 4.876 7.118 9.141 7.321 4.271.204 8.264-2.408 9.808-6.389 1.66-4.282.096-9.38-3.769-11.909z" />
-            </svg>
+            </svg>-->
           </div>
           <div class="detail-box">
             <h5>
@@ -324,7 +331,8 @@ session_start();
         </div>
         <div class="box">
           <div class="img-box">
-            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+          <img src = images/icono_naruto.png width="73" height="73">
+            <!--<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
               x="0px" y="0px" viewBox="0 0 315.377 315.377" style="enable-background:new 0 0 315.377 315.377;"
               xml:space="preserve">
               <g>
@@ -403,7 +411,7 @@ session_start();
               <g>
               </g>
             </svg>
-
+                -->
           </div>
           <div class="detail-box">
             <h5>
@@ -1122,7 +1130,7 @@ session_start();
             </h4>
             <ul class="navbar-nav  ">
               <li class="nav-item active">
-                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="about.html"> About </a>

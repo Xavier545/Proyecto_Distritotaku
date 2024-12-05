@@ -1,18 +1,7 @@
 <?php 
 
 session_start();
-
-
-
 ?>
-
-
-
-    
-  
-
-
-
 <!DOCTYPE html>
 <html>
 
@@ -70,19 +59,19 @@ session_start();
             <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
               <ul class="navbar-nav  ">
                 <li class="nav-item active">
-                  <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="landing_page.php">Inicio <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="about.html"> About </a>
+                  <a class="nav-link" href="about.html"> Sobre </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="buy.html"> Online Buy </a>
+                  <a class="nav-link" href="buy.html"> Compra Online </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="news.html"> News </a>
+                  <a class="nav-link" href="news.html"> Noticias </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="contact.html">Contact us</a>
+                  <a class="nav-link" href="contact.html">Contacto</a>
                 </li>
               </ul>
               <form class="form-inline ">
@@ -142,7 +131,7 @@ session_start();
                     </p>
                     <div>
                       <a href="">
-                        Buy Now
+                        Compra ahora
                       </a>
                     </div>
                   </div>
@@ -173,7 +162,7 @@ session_start();
                     </p>
                     <div>
                       <a href="">
-                        Buy Now
+                        Compra ahora
                       </a>
                     </div>
                   </div>
@@ -204,7 +193,7 @@ session_start();
                     </p>
                     <div>
                       <a href="">
-                        Buy Now
+                        Compra ahora
                       </a>
                     </div>
                   </div>
@@ -215,10 +204,10 @@ session_start();
         </div>
 
         <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-          <span class="sr-only">Previous</span>
+          <span class="sr-only">Previo</span>
         </a>
         <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-          <span class="sr-only">Next</span>
+          <span class="sr-only">Siguiente</span>
         </a>
       </div>
 
@@ -303,10 +292,54 @@ session_start();
         </div>
         <div class="col-lg-7 col-md-5">
           <div class="img-box">
-          <iframe width="560" height="315"   id="iframe_db" src="https://www.youtube.com/embed/Aa2IL_i7YfA?si=MYLfZLeVIQT4aUkz" title="YouTube video player" 
-            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-          </iframe>
+            <section class="client_section layout_padding">
+              <div class="container">
+                <div class="custom_heading-container ">
+                  <h2>
+                    Noticias!
+                  </h2>
+                </div>
+                <div id="carouselExample2Indicators" class="carousel slide" data-ride="carousel">
+                  <ol class="carousel-indicators">
+                    <li data-target="#carouselExample2Indicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExample2Indicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExample2Indicators" data-slide-to="2"></li>
+                  </ol>
+                  <div class="carousel-inner">
+                    <div class="carousel-item active">
+                      <div class="client_container layout_padding2">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/PBzsCsHgqgQ?si=wW1hzWVT9RwITuC5" 
+                          title="YouTube video player" frameborder="0" 
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                          referrerpolicy="strict-origin-when-cross-origin" 
+                          allowfullscreen>
+                        </iframe>
+                      </div>
+                    </div>
+                    <div class="carousel-item">
+                      <div class="client_container layout_padding2">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/0yzrlTxVxzg?si=7avxfZhJFuzvVFKQ" title="YouTube video player" 
+                          frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                          referrerpolicy="strict-origin-when-cross-origin" 
+                          allowfullscreen>
+                        </iframe>
+                      </div>
+                    </div>
+                    <div class="carousel-item">
+                      <div class="client_container layout_padding2">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/3mOTQcQrPkY?si=LwCKi-ib6lflHJZA" title="YouTube video player" 
+                          frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                          referrerpolicy="strict-origin-when-cross-origin" 
+                          allowfullscreen>
+                        </iframe>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </section>
           </div>
         </div>
       </div>
@@ -321,7 +354,7 @@ session_start();
   <section class="health_section layout_padding">
     <div class="health_carousel-container">
       <h2 class="text-uppercase">
-        Medicine & Health
+        Figuras & Health
 
       </h2>
       <div class="carousel-wrap layout_padding2">
@@ -361,7 +394,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -394,7 +427,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -425,7 +458,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -458,7 +491,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -489,7 +522,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -522,7 +555,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -553,7 +586,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -597,7 +630,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -614,7 +647,7 @@ session_start();
                 </div>
                 <div class="text">
                   <h6>
-                    Medicine
+                    Figuras
                   </h6>
                   <h6 class="price">
                     <span>
@@ -630,7 +663,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -647,7 +680,7 @@ session_start();
                 </div>
                 <div class="text">
                   <h6>
-                    Medicine
+                    Figuras
                   </h6>
                   <h6 class="price">
                     <span>
@@ -663,7 +696,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -680,7 +713,7 @@ session_start();
                 </div>
                 <div class="text">
                   <h6>
-                    Medicine
+                    Figuras
                   </h6>
                   <h6 class="price">
                     <span>
@@ -696,7 +729,7 @@ session_start();
             <div class="box">
               <div class="btn_container">
                 <a href="">
-                  Buy Now
+                  Compra ahora
                 </a>
               </div>
               <div class="img-box">
@@ -713,7 +746,7 @@ session_start();
                 </div>
                 <div class="text">
                   <h6>
-                    Medicine
+                    Figuras
                   </h6>
                   <h6 class="price">
                     <span>
@@ -730,7 +763,7 @@ session_start();
     </div>
     <div class="d-flex justify-content-center">
       <a href="">
-        See more
+        Ver más
       </a>
     </div>
   </section>
@@ -765,109 +798,7 @@ session_start();
 
   <!-- end about section -->
 
-  <!-- client section -->
-  <section class="client_section layout_padding">
-    <div class="container">
-      <div class="custom_heading-container ">
-        <h2>
-          What is says our clients
-        </h2>
-      </div>
-      <div id="carouselExample2Indicators" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-          <li data-target="#carouselExample2Indicators" data-slide-to="0" class="active"></li>
-          <li data-target="#carouselExample2Indicators" data-slide-to="1"></li>
-          <li data-target="#carouselExample2Indicators" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <div class="client_container layout_padding2">
-              <div class="client_detail">
-                <p>
-                  There are many variations of passages of Lorem Ipsum available, but the majority have suffered
-                  alteration in
-                  some form, by injected humour, or randomised words which don't look even slightly believable.
-                </p>
-              </div>
-              <div class="client_box ">
-                <div class="img-box">
-                  <img src="images/client.png " alt="">
-                </div>
-                <div class="name">
-                  <h5>
-                    Randomised
-                  </h5>
-                  <h6>
-                    <span>
-                      Client
-                    </span>
-                    <img src="images/quote.png" alt="">
-                  </h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <div class="client_container layout_padding2">
-              <div class="client_detail">
-                <p>
-                  There are many variations of passages of Lorem Ipsum available, but the majority have suffered
-                  alteration in
-                  some form, by injected humour, or randomised words which don't look even slightly believable.
-                </p>
-              </div>
-              <div class="client_box ">
-                <div class="img-box">
-                  <img src="images/client.png " alt="">
-                </div>
-                <div class="name">
-                  <h5>
-                    Randomised
-                  </h5>
-                  <h6>
-                    <span>
-                      Client
-                    </span>
-                    <img src="images/quote.png" alt="">
-                  </h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <div class="client_container layout_padding2">
-              <div class="client_detail">
-                <p>
-                  There are many variations of passages of Lorem Ipsum available, but the majority have suffered
-                  alteration in
-                  some form, by injected humour, or randomised words which don't look even slightly believable.
-                </p>
-              </div>
-              <div class="client_box ">
-                <div class="img-box">
-                  <img src="images/client.png " alt="">
-                </div>
-                <div class="name">
-                  <h5>
-                    Randomised
-                  </h5>
-                  <h6>
-                    <span>
-                      Client
-                    </span>
-                    <img src="images/quote.png" alt="">
-                  </h6>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-    </div>
-  </section>
-  <!-- end client section -->
+  
 
   <!-- info section -->
   <section class="info_section layout_padding2">
@@ -913,20 +844,20 @@ session_start();
         <div class="col-md-3">
           <div class="info_menu">
             <h4>
-              Menu
+              Menú
             </h4>
             <ul class="navbar-nav  ">
               <li class="nav-item active">
-                <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="landing_page.php">Inicio <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="about.html"> About </a>
+                <a class="nav-link" href="about.html"> Sobre </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="medicine.html"> Medicine </a>
+                <a class="nav-link" href="medicine.html"> Figuras </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="buy.html"> Online Buy </a>
+                <a class="nav-link" href="buy.html"> Compra Online </a>
               </li>
             </ul>
           </div>
@@ -934,16 +865,15 @@ session_start();
         <div class="col-md-6">
           <div class="info_news">
             <h4>
-              newsletter
+              Eres Nuevo?
             </h4>
-            <form action="">
-              <input type="text" placeholder="Enter Your email">
-              <div class="d-flex justify-content-center justify-content-end mt-3">
-                <button>
-                  Subscribe
-                </button>
+              <div class="col-md-5">
+                <div class="form_contaier_footer">
+                    <a href="register.php">
+                      <button type="submit" class="">Registrarse</butto>
+                    </a>
+                </div>
               </div>
-            </form>
           </div>
         </div>
       </div>

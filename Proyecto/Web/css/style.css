@@ -442,10 +442,19 @@ a:focus {
 }
 .col-md-5 .form_contaier_footer a{    
   display: inline-block;
-  padding: 10px 45px;
+  padding: 10px;
   background-color: #10e7f4;
   border: 1px solid #10e7f4;
   color: #ffffff;
+  margin-top: 35px;
+}
+
+.col-md-5 .form_contaier_footer a:hover{    
+  display: inline-block;
+  padding: 10px;
+  background:none;
+  border: 1px solid #10e7f4;
+  color: #10e7f4;
   margin-top: 35px;
 }
 

@@ -98,9 +98,9 @@ $conn->close();
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
           <a class="navbar-brand" href="landing_page.php">
-            <img src="images/logo.png" alt="">
+            <img src="images/nube_akatsuki.png" alt="">
             <span>
-              Medion
+              DISTRITOTAKU
             </span>
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"

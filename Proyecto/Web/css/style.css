@@ -389,7 +389,7 @@ a:focus {
 
 .feature_section .feature_container .box .img-box {
   border: 1px solid #000000;
-  width: 85px;
+  /**width: 105px;**/
   padding: 15px;
   border-radius: 3px;
 }
@@ -428,7 +428,7 @@ a:focus {
 }
 
 .discount_section .row .col-lg-7 {
-  padding: 0;
+  padding-left:30px;
 }
 
 .discount_section .detail-box {
@@ -440,6 +440,25 @@ a:focus {
   font-size: 2.5rem;
   font-weight: bold;
 }
+.col-md-5 .form_contaier_footer a{    
+  display: inline-block;
+  padding: 10px;
+  background-color: #10e7f4;
+  border: 1px solid #10e7f4;
+  color: #ffffff;
+  margin-top: 35px;
+}
+
+.col-md-5 .form_contaier_footer a:hover{    
+  display: inline-block;
+  padding: 10px;
+  background:none;
+  border: 1px solid #10e7f4;
+  color: #10e7f4;
+  margin-top: 35px;
+}
+
+
 
 .discount_section .detail-box h2 span {
   color: #10e7f4;
@@ -622,7 +641,7 @@ a:focus {
 }
 
 .about_section .container .img-box img {
-  width: 100%;
+  width: 80%;
 }
 
 .about_section .container .detail-box a {
@@ -688,7 +707,7 @@ a:focus {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  bottom: -25px;
+  bottom: -54px;
 }
 
 .client_section .carousel-indicators li {
@@ -715,7 +734,7 @@ a:focus {
 }
 
 .client_section .carousel-indicators li.active {
-  background-color: #161616;
+  background-color: #ff0f0f;
   width: 15px;
   height: 15px;
 }
@@ -787,6 +806,10 @@ a:focus {
   padding: 140px 15%;
   text-align: center;
   margin-top: 30px;
+}
+
+#iframe_db{
+  margin-right: 0%;
 }
 
 .contact_section .detail-box h3 {

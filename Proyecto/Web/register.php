@@ -25,18 +25,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("s", $nickname);
     $stmt->execute();
     $result = $stmt->get_result();
+    $alert = true;
 
     if ($result->num_rows > 0) {
-      echo "<script>
-              Swal.fire({
-                icon: 'error',
-                title: 'Oops...!',
-                text: 'El usuario ya existe',  
-                })
-              window.location= 'landing_page.php'
-            </script>"; 
+      $name_error = "Lo siento... el nombre de usuario ya existe";
+      
     } else {
         // Insertar nuevo usuario
+        $alert = false;
         $sql = "INSERT INTO USER (firstname, lastname, nickname, pw) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssss", $firstname, $lastname, $nickname, $pw);
@@ -98,26 +94,13 @@ $conn->close();
   <div class="hero_area">
     <!-- header section strats -->
     <header class="header_section">
-      <div class="container">
-        <div class="top_contact-container">
-          <div class="tel_container">
-            <a href="">
-              <img src="images/telephone-symbol-button.png" alt=""> Call : +34 673373751
-            </a>
-          </div>
-          <div class="social-container">
-            <a href="">
-              <img src="images/instagram.png" alt="" class="s-3">
-            </a>
-          </div>
-        </div>
-      </div>
+      
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
           <a class="navbar-brand" href="landing_page.php">
-            <img src="images/logo.png" alt="">
+            <img src="images/nube_akatsuki.png" alt="">
             <span>
-              Medion
+              DISTRITOTAKU
             </span>
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -198,6 +181,9 @@ $conn->close();
                         <div class="form-group">
                             <label for="nickname">Nickname</label>
                             <input type="text" class="form-control" name="nickname" id="nickname" required>
+                            <?php if (isset($name_error)): ?>
+                              <span style="color:red;"><?php echo $name_error; ?></span>
+                            <?php endif; ?>
                         </div>
                         <div class="form-group">
                             <label for="pw">Contraseña</label>
@@ -251,6 +237,16 @@ $conn->close();
               <div class="detail-box">
                 <h6>
                   demo@gmail
+                </h6>
+              </div>
+            </div>
+            <div class="box">
+              <div class="img-box">
+                <img src="images/instagram.png" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  Instagram
                 </h6>
               </div>
             </div>
@@ -312,6 +308,27 @@ $conn->close();
   <script type="text/javascript" src="js/bootstrap.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js">
   </script>
+  <?php
+    if($alert == true){
+      echo "<script>
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...!',
+                text: 'El usuario ya existe',  
+                })
+              
+            </script>"; 
+    }else{
+      echo "<script>
+              Swal.fire({
+                icon: 'success',
+                title: 'Bien Hecho!',
+                text: 'Te has registrado correctamente',  
+                })
+              
+            </script>"; 
+    }
+  ?>
   <script type="text/javascript">
     $(".owl-carousel").owlCarousel({
       loop: true,

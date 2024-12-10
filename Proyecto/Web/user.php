@@ -38,8 +38,8 @@ $conn->close();
 
 // Manejar logout
 if (isset($_GET['logout'])) {
-    session_destroy();
-    header("Location: landing_page.php");
+    session_destroy();  //la sesion se destruye
+    header("Location: landing_page.php"); //me envia a la landing page
     exit();
 }
 ?>
@@ -64,22 +64,73 @@ if (isset($_GET['logout'])) {
 
     <!-- Custom styles -->
     <link rel="stylesheet" href="css/style.css">
+
+
+    <link rel="shortcut icon" href="images/nube_akatsuki.ico" />
 </head>
 
 <body class="sub_page">
     <div class="hero_area">
-        <!-- Header -->
-        <header class="header_section">
-            <div class="container-fluid">
-                <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
-                    <a class="navbar-brand" href="landing_page.php">
-                        <img src="images/nube_akatsuki.png" alt="">
-                        <span>DISTRITOTAKU</span>
-                    </a>
-                </nav>
+        <!-- header section strats -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
+          <a class="navbar-brand" href="landing_page.php">
+            <img src="images/nube_akatsuki.png" alt="">
+            <span>
+              DISTRITOTAKU
+            </span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
+              <ul class="navbar-nav  ">
+                <li class="nav-item active">
+                  <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="about.html"> About </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="medicine.html"> Medicine </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="buy.html"> Online Buy </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="news.html"> News </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="contact.html">Contact us</a>
+                </li>
+              </ul>
+              <form class="form-inline ">
+                <input type="search" placeholder="Search">
+                <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
+              </form>
+              <div class="login_btn-contanier ml-0 ml-lg-5">
+                <?php if (isset($_SESSION['nickname'])):  ?>
+                        <a href="user.php"><?php echo htmlspecialchars($_SESSION['nickname']);?></a>
+                <?php else: ?>
+                <a href="user.php">
+                  <img src="images/user.png" alt="">
+                  <span>
+                    Login
+                  </span>
+                  <?php endif; ?>
+                </a>
+              </div>
             </div>
-        </header>
-        <!-- End Header -->
+          </div>
+
+        </nav>
+      </div>
+    </header>
+    <!-- end header section -->
     </div>
 
     <!-- User Info Section -->
@@ -110,6 +161,90 @@ if (isset($_GET['logout'])) {
         </div>
     </section>
     <!-- End User Info Section -->
+
+ <!-- info section -->
+ <section class="info_section layout_padding2">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="info_contact">
+            <h4>
+              Contact
+            </h4>
+            <div class="box">
+              <div class="img-box">
+                <img src="images/telephone-symbol-button.png" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  +01 123567894
+                </h6>
+              </div>
+            </div>
+            <div class="box">
+              <div class="img-box">
+                <img src="images/email.png" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  demo@gmail
+                </h6>
+              </div>
+            </div>
+            <div class="box">
+              <div class="img-box">
+                <img src="images/instagram.png" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  Instagram
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_menu">
+            <h4>
+              Menú
+            </h4>
+            <ul class="navbar-nav  ">
+              <li class="nav-item active">
+                <a class="nav-link" href="landing_page.php">Inicio <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html"> Sobre </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="medicine.html"> Figuras </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="buy.html"> Compra Online </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="info_news">
+            <h4>
+              Eres Nuevo?
+            </h4>
+              <div class="col-md-5">
+                <div class="form_contaier_footer">
+                    <a href="register.php">
+                      Registrarse
+                    </a>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- end info section -->
+
 
     <!-- Footer -->
     <section class="container-fluid footer_section">

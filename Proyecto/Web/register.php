@@ -18,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $lastname = htmlspecialchars($_POST['lastname']);
     $nickname = htmlspecialchars($_POST['nickname']);
     $pw = htmlspecialchars($_POST['pw']);
+    $rol = "user"; // Establecer el rol como "user" de forma predeterminada
 
     // Verificar si el nickname ya existe
     $sql = "SELECT * FROM USER WHERE nickname = ?";
@@ -28,14 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $alert = true;
 
     if ($result->num_rows > 0) {
-      $name_error = "Lo siento... el nombre de usuario ya existe";
-      
+        $name_error = "Lo siento... el nombre de usuario ya existe";
     } else {
         // Insertar nuevo usuario
         $alert = false;
-        $sql = "INSERT INTO USER (firstname, lastname, nickname, pw) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO USER (firstname, lastname, nickname, rol, pw) VALUES (?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssss", $firstname, $lastname, $nickname, $pw);
+        $stmt->bind_param("sssss", $firstname, $lastname, $nickname, $rol, $pw); // Incluir el rol como "user"
         
         if ($stmt->execute()) {
             // Redirigir al login después de registrar
@@ -88,72 +88,17 @@ $conn->close();
   <link href="css/style.css" rel="stylesheet" />
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
+
+  <link rel="shortcut icon" href="images/nube_akatsuki.ico" />
 </head>
 
 <body class="sub_page">
   <div class="hero_area">
     <!-- header section strats -->
-    <header class="header_section">
-      
-      <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
-          <a class="navbar-brand" href="landing_page.php">
-            <img src="images/nube_akatsuki.png" alt="">
-            <span>
-              DISTRITOTAKU
-            </span>
-          </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
-              <ul class="navbar-nav  ">
-                <li class="nav-item active">
-                  <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="about.html"> About </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="medicine.html"> Medicine </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="buy.html"> Online Buy </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="news.html"> News </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="contact.html">Contact us</a>
-                </li>
-              </ul>
-              <form class="form-inline ">
-                <input type="search" placeholder="Search">
-                <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-              </form>
-              <div class="login_btn-contanier ml-0 ml-lg-5">
-                <a href="login.php">
-                  <img src="images/user.png" alt="">
-                  <span>
-                    Login
-                  </span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-        </nav>
-      </div>
-    </header>
+    <?php include "sections/header.php";?>
     <!-- end header section -->
   </div>
 
-
-
-  <!-- contact section -->
   <!-- register section -->
   <section class="contact_section layout_padding">
     <div class="container">
@@ -207,102 +152,11 @@ $conn->close();
     </div>
 </section>
 <!-- end register section -->
-
-
-  <!-- end contact section -->
-
-  <!-- info section -->
-  <section class="info_section layout_padding2">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="info_contact">
-            <h4>
-              Contact
-            </h4>
-            <div class="box">
-              <div class="img-box">
-                <img src="images/telephone-symbol-button.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  +01 123567894
-                </h6>
-              </div>
-            </div>
-            <div class="box">
-              <div class="img-box">
-                <img src="images/email.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  demo@gmail
-                </h6>
-              </div>
-            </div>
-            <div class="box">
-              <div class="img-box">
-                <img src="images/instagram.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  Instagram
-                </h6>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="info_menu">
-            <h4>
-              Menu
-            </h4>
-            <ul class="navbar-nav  ">
-              <li class="nav-item active">
-                <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="about.html"> About </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="medicine.html"> Medicine </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="buy.html"> Online Buy </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="info_news">
-            <h4>
-              newsletter
-            </h4>
-            <form action="">
-              <input type="text" placeholder="Enter Your email">
-              <div class="d-flex justify-content-center justify-content-md-end mt-3">
-                <button>
-                  Subscribe
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- end info section -->
-
   <!-- footer section -->
-  <section class="container-fluid footer_section">
-    <p>
-      &copy; 2019 All Rights Reserved. Design by
-      <a href="https://html.design/">Free Html Templates</a>
-    </p>
-  </section>
+  <?php include "sections/footer.php";?>
   <!-- footer section -->
+
+
 
   <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.js"></script>

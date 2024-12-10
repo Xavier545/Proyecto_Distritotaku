@@ -1,7 +1,6 @@
 <?php 
 session_start();
 
-
 $servername = "db";
 $username = "mysql";
 $password = "mysecret";
@@ -10,35 +9,6 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-}
-
-// Crear la tabla USER si no existe
-
-$sql = "CREATE TABLE IF NOT EXISTS USER (
-    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    firstname VARCHAR(30) NOT NULL,
-    lastname VARCHAR(30) NOT NULL,
-    nickname VARCHAR(30) NOT NULL,
-    pw VARCHAR(50) NOT NULL
-);";
-$conn->query($sql);
-
-// Insertar usuarios si la tabla está vacía
-$sql = "SELECT * FROM USER;";
-$result = $conn->query($sql);
-if ($result->num_rows == 0) {
-    $users = [
-        ["Adrian", "Callejas", "carcaj", "cisco"],
-        ["Gabriel", "Silva", "grubusp", "cisco"],
-        ["Laura", "Ventis", "Lyra", "cisco"],
-        ["Juan", "Cortinas", "Kaox", "cisco"]
-    ];
-    
-    foreach ($users as $user) {
-        $sql = "INSERT INTO USER (firstname, lastname, nickname, pw) 
-                VALUES ('" . $user[0] . "', '" . $user[1] . "', '"  . $user[2] . "', '" . $user[3] . "');";
-        $conn->query($sql);
-    }
 }
 
 // Recojo los datos del form
@@ -53,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->execute();
     $result = $stmt->get_result();
     $alertuser = false;
+    
     // Verificar si el usuario existe
     if ($result->num_rows > 0) {
         $_SESSION['nickname'] = $nickname;
@@ -102,68 +73,18 @@ $conn->close();
   <link href="css/style.css" rel="stylesheet" />
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
+
+  <link rel="shortcut icon" href="images/nube_akatsuki.ico" />
 </head>
 
 <body class="sub_page">
   <div class="hero_area">
     <!-- header section strats -->
-    <header class="header_section">
-      <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
-          <a class="navbar-brand" href="landing_page.php">
-            <img src="images/nube_akatsuki.png" alt="">
-            <span>
-              DISTRITOTAKU
-            </span>
-          </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
-              <ul class="navbar-nav  ">
-                <li class="nav-item active">
-                  <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="about.html"> About </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="medicine.html"> Medicine </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="buy.html"> Online Buy </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="news.html"> News </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="contact.html">Contact us</a>
-                </li>
-              </ul>
-              <form class="form-inline ">
-                <input type="search" placeholder="Search">
-                <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-              </form>
-              <div class="login_btn-contanier ml-0 ml-lg-5">
-                <a href="">
-                  <img src="images/user.png" alt="">
-                  <span>
-                    Login
-                  </span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-        </nav>
-      </div>
-    </header>
+         
+     <?php include "sections/header.php";?>
+    
     <!-- end header section -->
   </div>
-  <!-- contact section -->
   <!-- login section -->
 <section class="contact_section layout_padding">
   <div class="container">
@@ -195,7 +116,7 @@ $conn->close();
                   </form>
                   
                     <a href="register.php" class="register"><button type="submit" class="">Registrarse</button></a>
-                  
+                          <!-- cambiar como un enlace y no un boton o un btn mas simple-->
                   
               </div>
           </div>
@@ -215,99 +136,9 @@ $conn->close();
 <!-- end login section -->
 
 
-  <!-- end contact section -->
-
-  <!-- info section -->
-  <section class="info_section layout_padding2">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="info_contact">
-            <h4>
-              Contact
-            </h4>
-            <div class="box">
-              <div class="img-box">
-                <img src="images/telephone-symbol-button.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  +01 123567894
-                </h6>
-              </div>
-            </div>
-            <div class="box">
-              <div class="img-box">
-                <img src="images/email.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  demo@gmail
-                </h6>
-              </div>
-            </div>
-            <div class="box">
-              <div class="img-box">
-                <img src="images/instagram.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  Instagram
-                </h6>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="info_menu">
-            <h4>
-              Menu
-            </h4>
-            <ul class="navbar-nav  ">
-              <li class="nav-item active">
-                <a class="nav-link" href="landing_page.php">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="about.html"> About </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="medicine.html"> Medicine </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="buy.html"> Online Buy </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="info_news">
-            <h4>
-              newsletter
-            </h4>
-            <form action="">
-              <input type="text" placeholder="Enter Your email">
-              <div class="d-flex justify-content-center justify-content-md-end mt-3">
-                <button>
-                  Subscribe
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- end info section -->
 
   <!-- footer section -->
-  <section class="container-fluid footer_section">
-    <p>
-      &copy; 2019 All Rights Reserved. Design by
-      <a href="https://html.design/">Free Html Templates</a>
-    </p>
-  </section>
+  <?php include "sections/footer.php";?>
   <!-- footer section -->
 
   <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>

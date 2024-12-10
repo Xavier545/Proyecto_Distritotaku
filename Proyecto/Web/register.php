@@ -68,7 +68,7 @@ $conn->close();
   <meta name="description" content="" />
   <meta name="author" content="" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <title>Medion</title>
+  <title>Distrititotaku</title>
 
   <!-- slider stylesheet -->
   <link rel="stylesheet" type="text/css"
@@ -309,24 +309,24 @@ $conn->close();
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js">
   </script>
   <?php
-    if($alert == true){
+    if(isset($alert) && $alert == true){
       echo "<script>
               Swal.fire({
                 icon: 'error',
                 title: 'Oops...!',
-                text: 'El usuario ya existe',  
+                text: 'El usuario ya existe',
                 })
-              
-            </script>"; 
+            </script>";
     }else{
       echo "<script>
               Swal.fire({
                 icon: 'success',
                 title: 'Bien Hecho!',
-                text: 'Te has registrado correctamente',  
+                text: 'Te has registrado correctamente',
                 })
-              
-            </script>"; 
+            </script>";
+
+            
     }
   ?>
   <script type="text/javascript">
@@ -371,30 +371,30 @@ $conn->close();
     });
   </script>
 
-   <script>
-       $("#registerForm").on("submit", function (e) {
-           e.preventDefault(); // Evitar recarga de página
+  <script>
+      $("#registerForm").on("submit", function (e) {
+          e.preventDefault(); // Evitar recarga de página
 
-           $.ajax({
-               url: "register_handler.php",
-               type: "POST",
-               data: $(this).serialize(),
-               success: function (response) {
-                   const res = JSON.parse(response);
-                   if (res.status === "success") {
-                       alert(res.message);
-                       window.location.href = "login.html"; // Redirigir si es exitoso
-                   } else {
-                       alert(res.message);
-                   }
-               },
-               error: function () {
-                   alert("Error en la conexión con el servidor.");
-               }
-           });
-       });
-   </script>
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+          $.ajax({
+              url: "register_handler.php",
+              type: "POST",
+              data: $(this).serialize(),
+              success: function (response) {
+                  const res = JSON.parse(response);
+                  if (res.status === "success") {
+                      alert(res.message);
+                      window.location.href = "login.html"; // Redirigir si es exitoso
+                  } else {
+                      alert(res.message);
+                  }
+              },
+              error: function () {
+                  alert("Error en la conexión con el servidor.");
+              }
+          });
+      });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 

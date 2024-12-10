@@ -52,14 +52,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("ss", $nickname, $pw); //le doy lo que he recogido del form
     $stmt->execute();
     $result = $stmt->get_result();
-
+    $alertuser = false;
     // Verificar si el usuario existe
     if ($result->num_rows > 0) {
         $_SESSION['nickname'] = $nickname;
         header('Location: landing_page.php');
         exit();
     } else {
-        echo "Usuario no encontrado.";
+        $alertuser = true;
     }
     $stmt->close();
 }
@@ -82,7 +82,7 @@ $conn->close();
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>Medion</title>
+  <title>Distrititotaku</title>
 
   <!-- slider stylesheet -->
   <link rel="stylesheet" type="text/css"
@@ -108,7 +108,6 @@ $conn->close();
   <div class="hero_area">
     <!-- header section strats -->
     <header class="header_section">
-      
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
           <a class="navbar-brand" href="landing_page.php">
@@ -164,9 +163,6 @@ $conn->close();
     </header>
     <!-- end header section -->
   </div>
-
-
-
   <!-- contact section -->
   <!-- login section -->
 <section class="contact_section layout_padding">
@@ -191,6 +187,9 @@ $conn->close();
                       <div class="form-group">
                           <label for="exampleInputNumber1">Contraseña</label>
                           <input type="password" class="form-control" id="exampleInputNumber1" name="pw" required>
+                          <?php if(isset($alertuser) && $alertuser == true):?>
+                            <span style="color: red;"><?php echo "Usuario inexistente o contraseña incorrecta ";?></span>
+                          <?php endif;?>
                       </div>
                       <button type="submit" class="">Iniciar Sesión</button>
                   </form>

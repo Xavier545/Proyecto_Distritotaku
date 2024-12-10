@@ -16,7 +16,7 @@ session_start();
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>Medion</title>
+  <title>Distrititotaku</title>
 
   <!-- slider stylesheet -->
   <link rel="stylesheet" type="text/css"
@@ -80,9 +80,7 @@ session_start();
               </form>
               <div class="login_btn-contanier ml-0 ml-lg-5">
               <?php if (isset($_SESSION['nickname'])):  ?>
-                   
-                        <a href="#"><?php echo htmlspecialchars($_SESSION['nickname']);?></a>
-                    
+                        <a href="user.php"><?php echo htmlspecialchars($_SESSION['nickname']);?></a>
                 <?php else: ?>
                 <a href="login.php">
                   <img src="images/user.png" alt="">

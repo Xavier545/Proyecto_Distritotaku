@@ -12,7 +12,6 @@
         $username = "mysql";
         $password = "mysecret";
         $dbname = "mydb";
-        
         // Create connection
         $conn = new mysqli($servername, $username, $password, $dbname);
         // Check connection
@@ -26,13 +25,11 @@
           lastname VARCHAR(30) NOT NULL,
           email VARCHAR(50)
           );";
-          
         if ($conn->query($sql) === TRUE) {
           echo "Table USER created successfully";
         } else {
           echo "Error creating table: " . $conn->error;
         }
-        
         $sql = "SELECT * FROM USER;";
         $result = $conn->query($sql);
         if(mysqli_num_rows($result) == 0){
@@ -48,10 +45,8 @@
             $conn->query($sql);
           }
         }
-                        
         $sql = "SELECT id, firstname, lastname FROM USER;";
         $result = $conn->query($sql);
-        
         if ($result->num_rows > 0) {
           while($row = $result->fetch_assoc()) {
             echo "id: " . $row["id"]. " - Name: " . $row["firstname"]. " " . $row["lastname"]. "<br>";

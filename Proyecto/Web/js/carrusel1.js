@@ -1,4 +1,4 @@
-function carruserl1(){
+function carrusel1(){
     $(".owl-carousel").owlCarousel({
         loop: true,
         margin: 10,
@@ -18,3 +18,4 @@ function carruserl1(){
         }
       });
 }
+carrusel1()

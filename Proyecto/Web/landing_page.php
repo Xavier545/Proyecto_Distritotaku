@@ -45,7 +45,7 @@ session_start();
   <div class="hero_area">
     <!--header section strats -->
     <?php include "sections/header.php";?>
-    <!-- end header section --> 
+    <!-- end header section -->
     <!-- slider section -->
     <?php include "sections/slider.php";?>
     <!-- end slider section -->
@@ -102,8 +102,8 @@ session_start();
   <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js"></script>
-  <script type="text/javascript" src ="js/carrusel1.js"></script>
-  <script type="text/javascript" src="js/carrusel2.js"></script>
+  <script src="js/carrusel1.js"></script>
+  <script src="js/carrusel2.js"></script>
 </body>
 
 </html>

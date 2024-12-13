@@ -19,3 +19,4 @@ function carrusel2(){
         }
       });
 }
+carrusel2()

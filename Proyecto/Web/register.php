@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $firstname = htmlspecialchars($_POST['firstname']);
     $lastname = htmlspecialchars($_POST['lastname']);
     $nickname = htmlspecialchars($_POST['nickname']);
-    $pw = htmlspecialchars($_POST['pw']);
+    $pw = htmlspecialchars($_POST['pw']); // Contraseña en texto plano
     $email = htmlspecialchars($_POST['email']);
     $address = htmlspecialchars($_POST['direccion']);
     $city = htmlspecialchars($_POST['ciudad']);
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         $name_error = "Lo siento... el nombre de usuario ya existe";
     } else {
-        // Insertar nuevo usuario
+        // Insertar nuevo usuario con contraseña en texto plano
         $alert = false;
         $sql = "INSERT INTO USER (firstname, lastname, nickname, rol, pw, email, address, postal_code, city, birthdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
@@ -111,7 +111,7 @@ $conn->close();
             <div class="row">
                 <div class="col-md-5">
                     <div class="form_container">
-                        <form method="POST" action="">
+ <form method="POST" action="">
                             <div class="form-group">
                                 <label for="firstname">Nombre</label>
                                 <input type="text" class="form-control" name="firstname" id="firstname" required>

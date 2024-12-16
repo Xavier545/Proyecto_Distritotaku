@@ -41,7 +41,9 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
         $email = htmlspecialchars($_POST['email']);
         $birthdate = htmlspecialchars($_POST['birthdate']);
         $address = htmlspecialchars($_POST['address']);
-        $password = password_hash('defaultpassword', PASSWORD_DEFAULT); // Cambia esto según sea necesario
+        $city = htmlspecialchars($_POST['city']);
+        $postal_code = htmlspecialchars($_POST['postal_code']);
+        $password = password_hash(htmlspecialchars($_POST['pw']), PASSWORD_DEFAULT); // Cambia esto según sea necesario
 
         // Verificar si el nickname ya existe
         $sql = "SELECT * FROM USER WHERE nickname = ?";
@@ -54,9 +56,9 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
             echo "<script>alert('El nickname ya está en uso. Elige otro.');</script>";
         } else {
             // Insertar el nuevo usuario
-            $sql = "INSERT INTO USER (firstname, lastname, nickname, email, birthdate, address, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO USER (firstname, lastname, nickname, email, birthdate, address, city, postal_code, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssssss", $firstname, $lastname, $nickname, $email, $birthdate, $address, $password);
+            $stmt->bind_param("sssssssss", $firstname, $lastname, $nickname, $email, $birthdate, $address, $city, $postal_code, $password);
             if ($stmt->execute()) {
                 echo "<script>alert('Usuario añadido correctamente.');</script>";
             } else {
@@ -102,7 +104,7 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
             <form method="POST" action="">
                 <div class="form-group">
                     <label for="username">Usuario</label>
-                    <input type="text" class="form-control" name="username" id ="username" required>
+                    <input type="text" class="form-control" name="username" id="username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Contraseña</label>
@@ -140,6 +142,18 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
                 <div class="form-group">
                     <label for="address">Dirección</label>
                     <input type="text" class="form-control" name="address" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">Ciudad</label>
+                    <input type="text" class="form-control" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label for="postal_code">Código Postal</label>
+                    <input type="text" class="form-control" name="postal_code" required>
+                </div>
+                <div class="form-group">
+                    <label for="pw">Contraseña</label>
+                    <input type="password" class="form-control" name="pw" required>
                 </div>
                 <button type="submit" name="add_user" class="btn btn-success">Añadir Usuario</button>
             </form>

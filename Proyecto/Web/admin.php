@@ -1,178 +1,111 @@
 <?php
 session_start();
 
-// Definir las credenciales del administrador
-define('ADMIN_USERNAME', 'admin');
-define('ADMIN_PASSWORD', 'admin'); // Cambia esto a una contraseña más segura
+// Verificar si el usuario está logueado como administrador
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: login.php"); // Redirigir al login si no está logueado
+    exit();
+}
 
-// Verificar si el usuario ya está logueado como administrador
-if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    // Conexión a la base de datos
-    $servername = "db";
-    $username = "mysql";
-    $password = "mysecret";
-    $dbname = "mydb";
+// Incluir archivo de configuración para la base de datos
+include 'config.php';
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    if ($conn->connect_error) {
-        die("Error al conectar con la base de datos: " . $conn->connect_error);
-    }
-
-    // Procesar la eliminación de un usuario
-    if (isset($_POST['delete_user'])) {
-        $nickname_to_delete = htmlspecialchars($_POST['nickname_to_delete']);
-        $sql = "DELETE FROM USER WHERE nickname = ?";
+// Manejar la eliminación de usuarios
+if (isset($_GET['delete'])) {
+    $userId = filter_var($_GET['id'], FILTER_VALIDATE_INT); // Validar el ID del usuario
+    if ($userId) {
+        $sql = "DELETE FROM USER WHERE id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $nickname_to_delete);
+        $stmt->bind_param("i", $userId);
         if ($stmt->execute()) {
-            echo "<script>alert('Usuario eliminado correctamente.');</script>";
-        } else {
-            echo "<script>alert('Error al eliminar el usuario: " . $stmt->error . "');</script>";
-        }
-        $stmt->close();
-    }
-
-    // Procesar la adición de un nuevo usuario
-    if (isset($_POST['add_user'])) {
-        $firstname = htmlspecialchars($_POST['firstname']);
-        $lastname = htmlspecialchars($_POST['lastname']);
-        $nickname = htmlspecialchars($_POST['nickname']);
-        $email = htmlspecialchars($_POST['email']);
-        $birthdate = htmlspecialchars($_POST['birthdate']);
-        $address = htmlspecialchars($_POST['address']);
-        $city = htmlspecialchars($_POST['city']);
-        $postal_code = htmlspecialchars($_POST['postal_code']);
-        $password = password_hash(htmlspecialchars($_POST['pw']), PASSWORD_DEFAULT); // Cambia esto según sea necesario
-
-        // Verificar si el nickname ya existe
-        $sql = "SELECT * FROM USER WHERE nickname = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $nickname);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            echo "<script>alert('El nickname ya está en uso. Elige otro.');</script>";
-        } else {
-            // Insertar el nuevo usuario
-            $sql = "INSERT INTO USER (firstname, lastname, nickname, email, birthdate, address, city, postal_code, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssssssss", $firstname, $lastname, $nickname, $email, $birthdate, $address, $city, $postal_code, $password);
-            if ($stmt->execute()) {
-                echo "<script>alert('Usuario añadido correctamente.');</script>";
-            } else {
-                echo "<script>alert('Error al añadir el usuario: " . $stmt->error . "');</script>";
+            // Si el usuario eliminado está logueado, destruir su sesión
+            $sql_check_session = "SELECT nickname FROM USER WHERE id = ?";
+            $stmt_check = $conn->prepare($sql_check_session);
+            $stmt_check->bind_param("i", $userId);
+            $stmt_check->execute();
+            $result_check = $stmt_check->get_result();
+            if ($result_check->num_rows === 0 && isset($_SESSION['id']) && $_SESSION['id'] === $userId) {
+                session_destroy();
+                setcookie(session_name(), '', time() - 3600, '/'); // Eliminar la cookie de sesión
             }
-            $stmt->close();
-        }
-    }
 
-    $conn->close();
-} else {
-    // Procesar el inicio de sesión
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $username = htmlspecialchars($_POST['username']);
-        $password = htmlspecialchars($_POST['password']);
-
-        if ($username === ADMIN_USERNAME && $password === ADMIN_PASSWORD) {
-            $_SESSION['admin_logged_in'] = true;
-            header("Location: admin.php");
+            echo "<script>alert('Usuario eliminado exitosamente.');</script>";
+            header("Location: admin.php"); // Recargar la página para actualizar la lista
             exit();
         } else {
-            $error = "Credenciales incorrectas.";
+            echo "<script>alert('Error al eliminar usuario: " . $stmt->error . "');</script>";
         }
+        $stmt->close();
+    } else {
+        echo "<script>alert('ID de usuario inválido.');</script>";
     }
 }
+
+// Obtener usuarios de la base de datos
+$sql = "SELECT * FROM USER";
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Panel de Administración - Registro de Usuarios</title>
     <link rel="stylesheet" href="css/bootstrap.css">
 </head>
-
 <body>
     <div class="container">
-        <h2>Panel de Administración</h2>
-
-        <?php if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true): ?>
-            <form method="POST" action="">
-                <div class="form-group">
-                    <label for="username">Usuario</label>
-                    <input type="text" class="form-control" name="username" id="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <input type="password" class="form-control" name="password" id="password" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-                <?php if (isset($error)): ?>
-                    <div class="alert alert-danger mt-2"><?= $error ?></div>
+        <h2>Registro de Usuarios</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Nickname</th>
+                    <th>Email</th>
+                    <th>Dirección</th>
+                    <th>Ciudad</th>
+                    <th>Código Postal</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ($result->num_rows > 0): ?>
+                    <?php while($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo $row['id']; ?></td>
+                            <td><?php echo $row['firstname']; ?></td>
+                            <td><?php echo $row['lastname']; ?></td>
+                            <td><?php echo $row['nickname']; ?></td>
+                            <td><?php echo $row['email']; ?></td>
+                            <td><?php echo $row['address']; ?></td>
+                            <td><?php echo $row['city']; ?></td>
+                            <td><?php echo $row['postal_code']; ?></td>
+                            <td><?php echo $row['birthdate']; ?></td>
+                            <td><?php echo $row['rol']; ?></td>
+                            <td>
+                                <a href="admin.php?delete=true&id=<?php echo $row['id']; ?>" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');" class="btn btn-danger">Eliminar</a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="11">No se encontraron usuarios.</td>
+                    </tr>
                 <?php endif; ?>
-            </form>
-        <?php else: ?>
-            <h3>Gestión de Usuarios</h3>
-            <form method="POST" action="">
-                <h4>Añadir Usuario</h4>
-                <div class="form-group">
-                    <label for="firstname">Nombre</label>
-                    <input type="text" class="form-control" name="firstname" required>
-                </div>
-                <div class="form-group">
-                    <label for="lastname">Apellido</label>
-                    <input type="text" class="form-control" name="lastname" required>
-                </div>
-                <div class="form-group">
-                    <label for="nickname">Nickname</label>
-                    <input type="text" class="form-control" name="nickname" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Correo</label>
-                    <input type="email" class="form-control" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="birthdate">Fecha de nacimiento</label>
-                    <input type="date" class="form-control" name="birthdate" required>
-                </div>
-                <div class="form-group">
-                    <label for="address">Dirección</label>
-                    <input type="text" class="form-control" name="address" required>
-                </div>
-                <div class="form-group">
-                    <label for="city">Ciudad</label>
-                    <input type="text" class="form-control" name="city" required>
-                </div>
-                <div class="form-group">
-                    <label for="postal_code">Código Postal</label>
-                    <input type="text" class="form-control" name="postal_code" required>
-                </div>
-                <div class="form-group">
-                    <label for="pw">Contraseña</label>
-                    <input type="password" class="form-control" name="pw" required>
-                </div>
-                <button type="submit" name="add_user" class="btn btn-success">Añadir Usuario</button>
-            </form>
-
-            <h4>Eliminar Usuario</h4>
-            <form method="POST" action="">
-                <div class="form-group">
-                    <label for="nickname_to_delete">Nickname del Usuario a Eliminar</label>
-                    <input type="text" class="form-control" name="nickname_to_delete" required>
-                </div>
-                <button type="submit" name="delete_user" class="btn btn-danger">Eliminar Usuario</button>
-            </form>
-
-            <a href="logout.php" class="btn btn-warning mt-3">Cerrar Sesión</a>
-        <?php endif; ?>
+            </tbody>
+        </table>
     </div>
 
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap.js"></script>
 </body>
-
 </html>
+
+<?php
+$conn->close();
+?>

@@ -1,6 +1,5 @@
 <?php 
-
-session_start();
+include "sections/comprobacion_existencia_user.php"
 ?>
 <!DOCTYPE html>
 <html>

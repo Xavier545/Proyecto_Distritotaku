@@ -801,11 +801,18 @@ a:focus {
 }
 
 .contact_section .detail-box {
-  background-image: url(../images/contact-bg.jpg);
-  color: #ffffff;
-  padding: 140px 15%;
+  background-image: url(../images/Simulacrum_Liu_Huo_Prototype.png);
+  background-size: cover;
+  color: #000000;
+  padding: 299px 15%;
   text-align: center;
   margin-top: 30px;
+}
+
+.contact_section .detail-box-under{
+  margin-top: 50px;
+  text-align: center;
+
 }
 
 #iframe_db{

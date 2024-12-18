@@ -25,13 +25,18 @@ if (isset($_SESSION['nickname'])) {
     $result = $stmt->get_result();
 
     if ($result->num_rows === 0) {
-        // Si el usuario no existe, cerrar sesión y redirigir al login
+        // Si el usuario no existe, cerrar sesión
         session_destroy();
-        header("Location: login.php");
+        // Mostrar un mensaje en la misma página
+        echo "<script>alert('Tu cuenta ha sido eliminada.');</script>";
+        // Terminar la ejecución del script
         exit();
     }
 
     $stmt->close();
     $conn->close();
-}
+ } //else {
+//     // Si no hay sesión, simplemente terminar la ejecución
+//     exit();
+// }
 ?>

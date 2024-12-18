@@ -156,14 +156,18 @@ $conn->close();
                     </div>
                 </div>
                 <div class="col-md-7">
-                    <div class="detail-box">
-                        <h3>
+                <div class="detail-box-under">
+                    <h3>
                             Únete a Nosotros
                         </h3>
                         <p>
                             Regístrate para acceder a nuestros servicios y obtener beneficios exclusivos.
                         </p>
                     </div>
+                    <div class="detail-box">
+                        
+                    </div>
+                    
                 </div>
             </div>
         </div>

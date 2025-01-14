@@ -23,9 +23,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
     $manufacturer = htmlspecialchars($_POST['manufacturer']);
     $release_date = htmlspecialchars($_POST['release_date']);
 
-    $sql = "INSERT INTO PRODUCT (name, category, price, stock, manufacturer, release_date) VALUES (?, ?, ?, ?, ?, ?)";
+    // Manejar la carga de la imagen
+    $image_url = "";
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        // Ruta de destino para guardar la imagen
+        $upload_dir = "uploads/";
+        $image_name = basename($_FILES['image']['name']);
+        $target_file = $upload_dir . $image_name;
+
+        // Comprobar si la imagen se sube correctamente
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+            $image_url = $target_file;
+        } else {
+            echo "<script>alert('Error al cargar la imagen.');</script>";
+        }
+    }
+
+    // Insertar producto en la base de datos con la URL de la imagen
+    $sql = "INSERT INTO PRODUCT (name, category, price, stock, manufacturer, release_date, image_url) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdiss", $name, $category, $price, $stock, $manufacturer, $release_date);
+    $stmt->bind_param("ssdisss", $name, $category, $price, $stock, $manufacturer, $release_date, $image_url);
 
     if ($stmt->execute()) {
         echo "<script>alert('Producto añadido exitosamente');</script>";
@@ -37,20 +55,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
 }
 
 // Manejar la eliminación de productos
-if (isset($_GET['delete']) && isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    $productId = intval($_GET['id']);
+if (isset($_GET['id']) && isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    $productId = intval($_GET['id']);  // Obtenemos el ID del producto a eliminar
 
-    $sql = "DELETE FROM PRODUCT WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $productId);
+    // Verificar si el ID del producto es válido
+    if ($productId > 0) {
+        $sql = "DELETE FROM PRODUCT WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $productId);
 
-    if ($stmt->execute()) {
-        echo "<script>alert('Producto eliminado exitosamente.');</script>";
-    } else {
-        echo "<script>alert('Error al eliminar producto: " . $stmt->error . "');</script>";
+        if ($stmt->execute()) {
+            echo "<script>alert('Producto eliminado exitosamente.');</script>";
+            // Redirigir a la misma página para actualizar la lista de productos
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        } else {
+            echo "<script>alert('Error al eliminar producto: " . $stmt->error . "');</script>";
+        }
+
+        $stmt->close();
     }
-
-    $stmt->close();
 }
 
 // Obtener productos de la base de datos
@@ -77,7 +101,7 @@ if ($result) {
         <h2>Panel de Administración de Productos</h2>
 
         <h3>Añadir Producto</h3>
-        <form method="POST" action="">
+        <form method="POST" action="" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">Nombre</label>
                 <input type="text" class="form-control" name="name" id="name" required>
@@ -102,6 +126,10 @@ if ($result) {
                 <label for="release_date">Fecha de Lanzamiento</label>
                 <input type="date" class="form-control" name="release_date" id="release_date" required>
             </div>
+            <div class="form-group">
+                <label for="image">Imagen del Producto</label>
+                <input type="file" class="form-control" name="image" id="image" accept="image/*">
+            </div>
             <button type="submit" name="add_product" class="btn btn-primary">Añadir Producto</button>
         </form>
 
@@ -116,6 +144,7 @@ if ($result) {
                     <th>Stock</th>
                     <th>Fabricante</th>
                     <th>Fecha de Lanzamiento</th>
+                    <th>Imagen</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -131,13 +160,20 @@ if ($result) {
                             <td><?php echo $product['manufacturer']; ?></td>
                             <td><?php echo $product['release_date']; ?></td>
                             <td>
-                                <a href="?delete=true&id=<?php echo $product['id']; ?>" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');" class="btn btn-danger btn-sm">Eliminar</a>
+                                <?php if (!empty($product['image_url'])): ?>
+                                    <img src="<?php echo $product['image_url']; ?>" alt="Imagen del producto" width="100">
+                                <?php else: ?>
+                                    No disponible
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <a href="?id=<?php echo $product['id']; ?>" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');" class="btn btn-danger btn-sm">Eliminar</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="8">No hay productos registrados.</td>
+                        <td colspan="9">No hay productos registrados.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -145,3 +181,8 @@ if ($result) {
     </div>
 </body>
 </html>
+
+<?php
+// Cerrar la conexión
+$conn->close();
+?>

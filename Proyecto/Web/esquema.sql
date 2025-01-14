@@ -7,9 +7,9 @@ CREATE TABLE IF NOT EXISTS USER (
     rol VARCHAR(30) NOT NULL,
     pw VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    address VARCHAR(100), 
+    address VARCHAR(100),
     postal_code VARCHAR(10),
-    city VARCHAR(30),  
+    city VARCHAR(30),
     birthdate DATE
 );
 
@@ -32,10 +32,14 @@ CREATE TABLE IF NOT EXISTS PRODUCT (
     release_date DATE
 );
 
+ALTER TABLE PRODUCT ADD COLUMN image_url VARCHAR(255);
+
+
 -- Insertar productos si la tabla está vacía
-INSERT INTO PRODUCT (name, category, price, stock, description, manufacturer, release_date) VALUES
-('Figura Goku Super Saiyan', 'Anime Figure', 29.99, 50, 'Figura de Goku transformado en Super Saiyan.', 'Bandai', '2021-01-15'),
-('Figura Naruto Uzumaki', 'Anime Figure', 24.99, 30, 'Figura de Naruto Uzumaki con su traje clásico.', 'Banpresto', '2020-11-10'),
-('Figura Luffy Gear 4', 'Anime Figure', 34.99, 20, 'Figura de Monkey D. Luffy en su modo Gear 4.', 'Megahouse', '2022-03-20'),
-('Figura Mikasa Ackerman', 'Anime Figure', 39.99, 15, 'Figura de Mikasa con su equipo de maniobras.', 'Good Smile Company', '2021-08-05'),
-('Figura Asuka Langley', 'Anime Figure', 44.99, 10, 'Figura de Asuka Langley en su plug suit.', 'Kotobukiya', '2019-12-25');
+INSERT INTO PRODUCT (name, category, price, stock, description, manufacturer, release_date, image_url) VALUES
+('Figura Goku Super Saiyan', 'Anime Figure', 29.99, 50, 'Figura de Goku transformado en Super Saiyan.', 'Bandai', '2021-01-15', 'images/goku_bicicleta.png'),
+('Figura Naruto Uzumaki', 'Anime Figure', 24.99, 30, 'Figura de Naruto Uzumaki con su traje clásico.', 'Banpresto', '2020-11-10', 'images/naruto_niño.png'),
+('Figura Luffy Gear 4', 'Anime Figure', 34.99, 20, 'Figura de Monkey D. Luffy en su modo Gear 4.', 'Megahouse', '2022-03-20', 'images/luffy_gear_five.png'),
+('Figura Mikasa Ackerman', 'Anime Figure', 39.99, 15, 'Figura de Mikasa con su equipo de maniobras.', 'Good Smile Company', '2021-08-05', 'images/mikasa.jpg'),
+('Figura Asuka Langley', 'Anime Figure', 44.99, 10, 'Figura de Asuka Langley en su plug suit.', 'Kotobukiya', '2019-12-25', 'images/asuka.jpg');
+

@@ -21,7 +21,7 @@ if ($conn->connect_error) {
 
 // Obtener información del usuario
 $nickname = $_SESSION['nickname'];
-$sql = "SELECT firstname, lastname, nickname, email, birthdate, address FROM USER WHERE nickname = ?";
+$sql = "SELECT firstname, lastname, nickname, email, birthdate, address, pw FROM USER WHERE nickname = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $nickname);
 $stmt->execute();
@@ -43,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = htmlspecialchars($_POST['email']);
     $birthdate = htmlspecialchars($_POST['birthdate']);
     $address = htmlspecialchars($_POST['address']);
+    $new_password = $_POST['password'];
 
     // Verificar si el nuevo nickname ya existe
     if ($new_nickname !== $nickname) {
@@ -61,17 +62,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bind_param("sssssss", $firstname, $lastname, $new_nickname, $email, $birthdate, $address, $nickname);
 
             if ($stmt->execute()) {
-                // Actualizar la sesión con el nuevo nickname
                 $_SESSION['nickname'] = $new_nickname;
                 echo "<script>alert('Información actualizada correctamente.');</script>";
-                // Volver a obtener la información actualizada
-                $stmt->close();
-                $sql = "SELECT firstname, lastname, nickname, email, birthdate, address FROM USER WHERE nickname = ?";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("s", $new_nickname);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $user = $result->fetch_assoc();
+                $nickname = $new_nickname;
             } else {
                 echo "Error al actualizar la información: " . $stmt->error;
             }
@@ -84,24 +77,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($stmt->execute()) {
             echo "<script>alert('Información actualizada correctamente.');</script>";
-            // Volver a obtener la información actualizada
-            $stmt->close();
-            $sql = "SELECT firstname, lastname, nickname, email, birthdate, address FROM USER WHERE nickname = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $nickname);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $user = $result->fetch_assoc();
         } else {
             echo "Error al actualizar la información: " . $stmt->error;
+        }
+    }
+
+    // Actualizar la contraseña si se proporciona
+    if (!empty($new_password)) {
+        $sql = "UPDATE USER SET pw = ? WHERE nickname = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $new_password, $nickname);
+        if ($stmt->execute()) {
+            echo "<script>alert('Contraseña actualizada correctamente.');</script>";
+        } else {
+            echo "Error al actualizar la contraseña: " . $stmt->error;
         }
     }
 }
 
 $conn->close();
-
-include "functions/logout.php";
-logout();
 ?>
 
 <!DOCTYPE html>
@@ -109,7 +103,7 @@ logout();
 
 <head>
     <meta charset="UTF-8">
-    <meta name ="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Usuario</title>
 
     <!-- Slider stylesheet -->
@@ -150,27 +144,37 @@ logout();
                         <form method="POST" action="">
                             <div class="form-group">
                                 <label for="firstname">Nombre</label>
-                                <input type="text" class="form-control" name="firstname" id="firstname" value="<?= htmlspecialchars($user['firstname']) ?>" required>
+                                <input type="text" class="form-control" name="firstname" id="firstname"
+                                    value="<?= htmlspecialchars($user['firstname']) ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="lastname">Apellido</label>
-                                <input type="text" class="form-control" name="lastname" id="lastname" value="<?= htmlspecialchars($user['lastname']) ?>" required>
+                                <input type="text" class="form-control" name="lastname" id="lastname"
+                                    value="<?= htmlspecialchars($user['lastname']) ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="nickname">Nickname</label>
-                                <input type="text" class="form-control" name="nickname" id="nickname" value="<?= htmlspecialchars($user['nickname']) ?>" required>
+                                <input type="text" class="form-control" name="nickname" id="nickname"
+                                    value="<?= htmlspecialchars($user['nickname']) ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="email">Correo</label>
-                                <input type="email" class="form-control" name="email" id="email" value="<?= htmlspecialchars($user['email']) ?>" required>
+                                <input type="email" class="form-control" name="email" id="email"
+                                    value="<?= htmlspecialchars($user['email']) ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="birthdate">Fecha de nacimiento</label>
-                                <input type="date" class="form-control" name="birthdate" id="birthdate" value="<?= htmlspecialchars($user['birthdate']) ?>" required>
+                                <input type="date" class="form-control" name="birthdate" id="birthdate"
+                                    value="<?= htmlspecialchars($user['birthdate']) ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="address">Dirección</label>
-                                <input type="text" class="form-control" name="address" id="address" value="<?= htmlspecialchars($user['address']) ?>" required>
+                                <input type="text" class="form-control" name="address" id="address"
+                                    value="<?= htmlspecialchars($user['address']) ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Nueva Contraseña</label>
+                                <input type="password" class="form-control" name="password" id="password">
                             </div>
                             <button type="submit" class="btn btn-primary mt-3">Actualizar Información</button>
                         </form>
@@ -178,9 +182,10 @@ logout();
                     </div>
                 </div>
                 <div class="col-md-7">
+                    <h3>Bienvenido, <?= htmlspecialchars($user['firstname']) ?>!</h3>
+                    <p>Revisa tus datos y disfruta de las funcionalidades de tu cuenta.</p>
                     <div class="detail-box">
-                        <h3>Bienvenido, <?= htmlspecialchars($user['firstname']) ?>!</h3>
-                        <p>Revisa tus datos y disfruta de las funcionalidades de tu cuenta.</p>
+
                     </div>
                 </div>
             </div>

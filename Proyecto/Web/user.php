@@ -1,6 +1,13 @@
 <?php
 session_start();
 
+// Verificar si el usuario está solicitando cerrar sesión
+if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
+    session_destroy();
+    header("Location: landing_page.php"); // Redirigir a la landing page después de cerrar sesión
+    exit();
+}
+
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['nickname'])) {
     header("Location: index.php"); // Redirigir al login si no está logueado
@@ -125,7 +132,7 @@ $conn->close();
 <body class="sub_page">
     <div class="hero_area">
         <!-- header section starts -->
-        <?php include "sections/header.php"?>
+        <?php include "sections/header.php" ?>
         <!-- end header section -->
     </div>
 
@@ -184,9 +191,7 @@ $conn->close();
                 <div class="col-md-7">
                     <h3>Bienvenido, <?= htmlspecialchars($user['firstname']) ?>!</h3>
                     <p>Revisa tus datos y disfruta de las funcionalidades de tu cuenta.</p>
-                    <div class="detail-box">
-
-                    </div>
+                    <div class="detail-box"></div>
                 </div>
             </div>
         </div>
@@ -194,7 +199,7 @@ $conn->close();
     <!-- End User Info Section -->
 
     <!-- info section -->
-    <?php include "sections/footer.php"?>
+    <?php include "sections/footer.php" ?>
 
     <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>

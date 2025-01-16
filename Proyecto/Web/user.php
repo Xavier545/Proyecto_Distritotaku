@@ -51,6 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $birthdate = htmlspecialchars($_POST['birthdate']);
     $address = htmlspecialchars($_POST['address']);
     $new_password = $_POST['password'];
+    $current_password = $_POST['current_password'];
 
     // Verificar si el nuevo nickname ya existe
     if ($new_nickname !== $nickname) {
@@ -91,13 +92,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Actualizar la contraseña si se proporciona
     if (!empty($new_password)) {
-        $sql = "UPDATE USER SET pw = ? WHERE nickname = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $new_password, $nickname);
-        if ($stmt->execute()) {
-            echo "<script>alert('Contraseña actualizada correctamente.');</script>";
+        // Verificar si la contraseña actual proporcionada es correcta
+        if ($current_password !== $user['pw']) {
+            echo "<script>alert('La contraseña actual es incorrecta.');</script>";
+        } elseif ($new_password === $user['pw']) {
+            echo "<script>alert('La nueva contraseña no puede ser igual a la actual.');</script>";
         } else {
-            echo "Error al actualizar la contraseña: " . $stmt->error;
+            $sql = "UPDATE USER SET pw = ? WHERE nickname = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ss", $new_password, $nickname);
+            if ($stmt->execute()) {
+                echo "<script>alert('Contraseña actualizada correctamente.');</script>";
+            } else {
+                echo "Error al actualizar la contraseña: " . $stmt->error;
+            }
         }
     }
 }
@@ -178,6 +186,10 @@ $conn->close();
                                 <label for="address">Dirección</label>
                                 <input type="text" class="form-control" name="address" id="address"
                                     value="<?= htmlspecialchars($user['address']) ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="current_password">Contraseña Actual</label>
+                                <input type="password" class="form-control" name="current_password" id="current_password" required>
                             </div>
                             <div class="form-group">
                                 <label for="password">Nueva Contraseña</label>

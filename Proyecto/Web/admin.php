@@ -40,13 +40,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         if ($result->num_rows > 0) {
             $name_error = "Lo siento... el nombre de usuario ya existe";
         } else {
-            // Cifrar la contraseña antes de almacenarla
-            $hashed_pw = password_hash($pw, PASSWORD_DEFAULT);
-
             // Insertar nuevo usuario
             $sql = "INSERT INTO USER (firstname, lastname, nickname, rol, pw, email, address, postal_code, city, birthdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssssssss", $firstname, $lastname, $nickname, $rol, $hashed_pw, $email, $address, $postal_code, $city, $birthdate);
+            $stmt->bind_param("ssssssssss", $firstname, $lastname, $nickname, $rol, $pw, $email, $address, $postal_code, $city, $birthdate);
             
             if ($stmt->execute()) {
                 echo "<script>alert('Usuario registrado exitosamente');</script>";
@@ -110,16 +107,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_user'])) {
 
         // Verificar si se ha proporcionado una nueva contraseña
         if (!empty($new_pw)) {
-            // Verificar si la nueva contraseña es válida
-            if(strlen($new_pw) < 8) {
-                echo "<script>alert('La contraseña debe tener al menos 8 caracteres.');</script>";
-            } else {
-                // Cifrar la nueva contraseña
-                $hashed_pw = password_hash($new_pw, PASSWORD_DEFAULT);
-                $sql = "UPDATE USER SET firstname = ?, lastname = ?, nickname = ?, email = ?, address = ?, city = ?, postal_code = ?, pw = ? WHERE id = ?";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ssssssssi", $firstname, $lastname, $nickname, $email, $address, $city, $postal_code, $hashed_pw, $userId);
-            }
+            $sql = "UPDATE USER SET firstname = ?, lastname = ?, nickname = ?, email = ?, address = ?, city = ?, postal_code = ?, pw = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssssssssi", $firstname, $lastname, $nickname, $email, $address, $city, $postal_code, $new_pw, $userId);
         } else {
             // Si no hay nueva contraseña, actualizar solo los otros campos
             $sql = "UPDATE USER SET firstname = ?, lastname = ?, nickname = ?, email = ?, address = ?, city = ?, postal_code = ? WHERE id = ?";
@@ -128,7 +118,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_user'])) {
         }
 
         if ($stmt->execute()) {
-            // Redirigir después de la actualización para evitar el reenvío de formularios
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         } else {
@@ -339,3 +328,5 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
     </div>
 </body>
 </html>
+
+

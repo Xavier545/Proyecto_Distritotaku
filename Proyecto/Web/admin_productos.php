@@ -41,26 +41,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
             if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
                 $image_url = $target_file;
             } else {
-                echo "<script>alert('Error al cargar la imagen. Verifica los permisos del directorio.');</script>";
+                $_SESSION['error'] = 'Error al cargar la imagen. Verifica los permisos del directorio.';
             }
         } else {
-            echo "<script>alert('Formato de imagen no permitido. Usa JPEG, PNG o GIF.');</script>";
+            $_SESSION['error'] = 'Formato de imagen no permitido. Usa JPEG, PNG o GIF.';
         }
     }
 
     // Insertar producto en la base de datos con la URL de la imagen
-    $sql = "INSERT INTO PRODUCT (name, category, price, stock, manufacturer, release_date, image_url) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdisss", $name, $category, $price, $stock, $manufacturer, $release_date, $image_url);
+    if (!isset($_SESSION['error'])) {
+        $sql = "INSERT INTO PRODUCT (name, category, price, stock, manufacturer, release_date, image_url) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssdisss", $name, $category, $price, $stock, $manufacturer, $release_date, $image_url);
 
-    if ($stmt->execute()) {
-        echo "<script>alert('Producto añadido exitosamente');</script>";
-    } else {
-        echo "<script>alert('Error al añadir producto: " . $stmt->error . "');</script>";
+        if ($stmt->execute()) {
+            $_SESSION['success'] = 'Producto añadido exitosamente.';
+        } else {
+            $_SESSION['error'] = 'Error al añadir producto: ' . $stmt->error;
+        }
+
+        $stmt->close();
     }
 
-    $stmt->close();
+    // Redirigir para evitar reenvío del formulario
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
 
 // Procesar eliminación de productos
@@ -77,19 +83,22 @@ if (isset($_GET['delete_id']) && is_numeric($_GET['delete_id'])) {
 
         $stmt->bind_param("i", $productId);
         if ($stmt->execute()) {
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
+            $_SESSION['success'] = 'Producto eliminado exitosamente.';
         } else {
-            echo "<script>alert('Error al ejecutar la consulta: " . $stmt->error . "');</script>";
+            $_SESSION['error'] = 'Error al ejecutar la consulta: ' . $stmt->error;
         }
 
         $stmt->close();
     }
+
+    // Redirigir para evitar problemas de reenvío
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
 
-// Procesar edición de productos
+// Procesar actualización de productos
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_product'])) {
-    $id = htmlspecialchars($_POST['id']);
+    $id = intval($_POST['id']);
     $name = htmlspecialchars($_POST['name']);
     $category = htmlspecialchars($_POST['category']);
     $price = htmlspecialchars($_POST['price']);
@@ -97,20 +106,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_product'])) {
     $manufacturer = htmlspecialchars($_POST['manufacturer']);
     $release_date = htmlspecialchars($_POST['release_date']);
 
-    // Actualizar producto
-    $sql = "UPDATE PRODUCT SET name = ?, category = ?, price = ?, stock = ?, manufacturer = ?, release_date = ? WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdissi", $name, $category, $price, $stock, $manufacturer, $release_date, $id);
+    $image_url = $_POST['existing_image'];
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $image_name = basename($_FILES['image']['name']);
+        $target_file = $upload_dir . $image_name;
 
-    if ($stmt->execute()) {
-        echo "<script>alert('Producto actualizado exitosamente');</script>";
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
-    } else {
-        echo "<script>alert('Error al actualizar producto: " . $stmt->error . "');</script>";
+        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+        if (in_array($_FILES['image']['type'], $allowed_types)) {
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+                $image_url = $target_file;
+            } else {
+                $_SESSION['error'] = 'Error al cargar la imagen.';
+            }
+        } else {
+            $_SESSION['error'] = 'Formato de imagen no permitido.';
+        }
     }
 
-    $stmt->close();
+    if (!isset($_SESSION['error'])) {
+        $sql = "UPDATE PRODUCT SET name=?, category=?, price=?, stock=?, manufacturer=?, release_date=?, image_url=? WHERE id=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssdisssi", $name, $category, $price, $stock, $manufacturer, $release_date, $image_url, $id);
+
+        if ($stmt->execute()) {
+            $_SESSION['success'] = 'Producto actualizado exitosamente.';
+        } else {
+            $_SESSION['error'] = 'Error al actualizar producto: ' . $stmt->error;
+        }
+
+        $stmt->close();
+    }
+
+    // Redirigir para evitar problemas de reenvío
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
 
 // Obtener productos de la base de datos
@@ -122,19 +151,6 @@ if ($result) {
         $products[] = $row;
     }
 }
-
-// Obtener datos del producto para editar
-$edit_product = null;
-if (isset($_GET['edit_id']) && is_numeric($_GET['edit_id'])) {
-    $edit_id = intval($_GET['edit_id']);
-    $sql = "SELECT * FROM PRODUCT WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $edit_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $edit_product = $result->fetch_assoc();
-    $stmt->close();
-}
 ?>
 
 <!DOCTYPE html>
@@ -143,76 +159,123 @@ if (isset($_GET['edit_id']) && is_numeric($_GET['edit_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administración de Productos</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h2>Panel de Administración de Productos</h2>
+<div class="hero_area">
+    <!--header section strats -->
+    <?php include "sections/header_admin.php";?>
+    <!-- end header section -->
+    
+</div>
+    <div class="container mt-5">
+        <h2 class="mb-4">Panel de Administración de Productos</h2>
 
-        <?php if ($edit_product): ?>
-            <h3>Editar Producto</h3>
-            <form method="POST" action="">
-                <input type="hidden" name="id" value="<?php echo $edit_product['id']; ?>">
-                <div class="form-group">
-                    <label for="name">Nombre</label>
-                    <input type="text" class="form-control" name="name" id="name" value="<?php echo $edit_product['name']; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="category">Categoría</label>
-                    <input type="text" class="form-control" name="category" id="category" value="<?php echo $edit_product['category']; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="price">Precio</label>
-                    <input type="number" class="form-control" name="price" id="price" step="0.01" value="<?php echo $edit_product['price']; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="stock">Stock</label>
-                    <input type="number" class="form-control" name="stock" id="stock" value="<?php echo $edit_product['stock']; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="manufacturer">Fabricante</label>
-                    <input type="text" class="form-control" name="manufacturer" id="manufacturer" value="<?php echo $edit_product['manufacturer']; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="release_date">Fecha de Lanzamiento</label>
-                    <input type="date" class="form-control" name="release_date" id="release_date" value="<?php echo $edit_product['release_date']; ?>" required>
-                </div>
-                <button type="submit" name="edit_product" class="btn btn-primary">Guardar Cambios</button>
-            </form>
-        <?php else: ?>
-            <h3>Añadir Producto</h3>
-            <form method="POST" action="" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="name">Nombre</label>
-                    <input type="text" class="form-control" name="name" id="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="category">Categoría</label>
-                    <input type="text" class="form-control" name="category" id="category" required>
-                </div>
-                <div class="form-group">
-                    <label for="price">Precio</label>
-                    <input type="number" class="form-control" name="price" id="price" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="stock">Stock</label>
-                    <input type="number" class="form-control" name="stock" id="stock" required>
-                </div>
-                <div class="form-group">
-                    <label for="manufacturer">Fabricante</label>
-                    <input type="text" class="form-control" name="manufacturer" id="manufacturer" required>
-                </div>
-                <div class="form-group">
-                    <label for="release_date">Fecha de Lanzamiento</label>
-                    <input type="date" class="form-control" name="release_date" id="release_date" required>
-                </div>
-                <div class="form-group">
-                    <label for="image">Imagen del Producto</label>
-                    <input type="file" class="form-control" name="image" id="image" accept="image/*">
-                </div>
-                <button type="submit" name="add_product" class="btn btn-primary">Añadir Producto</button>
-            </form>
-        <?php endif; ?>
+        <!-- Botón para abrir el modal de añadir producto -->
+        <button class="btn btn-primary mb-3" type="button" data-bs-toggle="modal" data-bs-target="#addProductModal">
+            Añadir Producto
+        </button>
+
+        <!-- Modal para añadir producto -->
+        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="POST" action="" enctype="multipart/form-data">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addProductModalLabel">Añadir Producto</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group mb-3">
+                                <label for="name">Nombre</label>
+                                <input type="text" class="form-control" name="name" id="name" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="category">Categoría</label>
+                                <input type="text" class="form-control" name="category" id="category" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="price">Precio</label>
+                                <input type="number" class="form-control" name="price" id="price" step="0.01" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="stock">Stock</label>
+                                <input type="number" class="form-control" name="stock" id="stock" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="manufacturer">Fabricante</label>
+                                <input type="text" class="form-control" name="manufacturer" id="manufacturer" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="release_date">Fecha de Lanzamiento</label>
+                                <input type="date" class="form-control" name="release_date" id="release_date" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="image">Imagen del Producto</label>
+                                <input type="file" class="form-control" name="image" id="image" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" name="add_product" class="btn btn-primary">Guardar Producto</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal para editar producto -->
+        <?php foreach ($products as $product): ?>
+        <div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="POST" action="" enctype="multipart/form-data">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Editar Producto</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                            <input type="hidden" name="existing_image" value="<?php echo $product['image_url']; ?>">
+                            <div class="form-group mb-3">
+                                <label for="name">Nombre</label>
+                                <input type="text" class="form-control" name="name" value="<?php echo $product['name']; ?>" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="category">Categoría</label>
+                                <input type="text" class="form-control" name="category" value="<?php echo $product['category']; ?>" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="price">Precio</label>
+                                <input type="number" class="form-control" name="price" value="<?php echo $product['price']; ?>" step="0.01" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="stock">Stock</label>
+                                <input type="number" class="form-control" name="stock" value="<?php echo $product['stock']; ?>" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="manufacturer">Fabricante</label>
+                                <input type="text" class="form-control" name="manufacturer" value="<?php echo $product['manufacturer']; ?>" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="release_date">Fecha de Lanzamiento</label>
+                                <input type="date" class="form-control" name="release_date" value="<?php echo $product['release_date']; ?>" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="image">Imagen del Producto</label>
+                                <input type="file" class="form-control" name="image" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" name="edit_product" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <?php endforeach; ?>
 
         <h3>Lista de Productos</h3>
         <table class="table table-bordered">
@@ -248,10 +311,10 @@ if (isset($_GET['edit_id']) && is_numeric($_GET['edit_id'])) {
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="?edit_id=<?php echo $product['id']; ?>" class="btn btn-warning btn-sm">Editar</a>
-                                <a href="?delete_id=<?php echo $product['id']; ?>" 
-                                   onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');" 
-                                   class="btn btn-danger btn-sm">Eliminar</a>
+                                <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" 
+                                   data-bs-target="#editProductModal<?php echo $product['id']; ?>">Editar</a>
+                                <a href="?delete_id=<?php echo $product['id']; ?>" class="btn btn-danger btn-sm" 
+                                   onclick="return confirm('¿Estás seguro de eliminar este producto?')">Eliminar</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

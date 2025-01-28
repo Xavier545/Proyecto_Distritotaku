@@ -14,7 +14,7 @@ include "sections/admin.php"
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="hero_area">
+<div>
     <!--header section strats -->
     <?php include "sections/header_admin.php";?>
     <!-- end header section -->

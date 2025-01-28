@@ -23,7 +23,7 @@
                   <a class="nav-link" href="about.html"> Sobre </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="buy.html"> Compra Online </a>
+                  <a class="nav-link" href="productos.php"> Compra Online </a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="news.html"> Noticias </a>

@@ -1,23 +1,39 @@
 <?php 
+// Iniciar sesión
+session_start();
 include "sections/comprobacion_existencia_user.php";
 
-// Simulación de datos de productos
-$products = [
-  ["id" => 1, "name" => "Figura Naruto", "category" => "Figura Anime", "price" => 50],
-  ["id" => 2, "name" => "Camiseta One Piece", "category" => "Camiseta", "price" => 20],
-  ["id" => 3, "name" => "Figura Goku", "category" => "Figura Anime", "price" => 60],
-  ["id" => 4, "name" => "Camiseta Attack on Titan", "category" => "Camiseta", "price" => 25]
-];
+// Consulta las categorías desde la base de datos
+$categoriesQuery = "SELECT id, name FROM CATEGORY";
+$categoriesResult = $conn->query($categoriesQuery);
 
-// Manejar filtro por categoría
-$selectedCategory = isset($_GET['category']) ? $_GET['category'] : 'Figura Anime';
-$filteredProducts = array_filter($products, fn($product) => $product['category'] === $selectedCategory);
+if (!$categoriesResult) {
+    die("Error al consultar categorías: " . $conn->error);
+}
+
+// Establece categoría por defecto
+$selectedCategoryId = $_GET['category_id'] ?? 1;
+
+// Consulta los productos según la categoría seleccionada
+$productsQuery = "SELECT PRODUCT.id, PRODUCT.name, CATEGORY.name AS category, PRODUCT.price 
+                   FROM PRODUCT 
+                   JOIN CATEGORY ON PRODUCT.category_id = CATEGORY.id
+                   WHERE CATEGORY.id = ?";
+$stmt = $conn->prepare($productsQuery);
+$stmt->bind_param("i", $selectedCategoryId);
+$stmt->execute();
+$productsResult = $stmt->get_result();
+
+
+$stmt->close();
+$conn->close();
+
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-     <!-- Basic -->
+  <!-- Basic -->
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <!-- Mobile Metas -->
@@ -49,25 +65,27 @@ $filteredProducts = array_filter($products, fn($product) => $product['category']
   <link href="css/responsive.css" rel="stylesheet" />
 
 
-  <link rel="shortcut icon" href="images/nube_akatsuki.ico" /> 
+  <link rel="shortcut icon" href="images/nube_akatsuki.ico" />
 </head>
 <body>
-
-
 <div>
-    <!--header section strats -->
-    <?php include "sections/header.php";?>
-    <?php include "sections/productos.php";?>
+    <!--header section-->
+    <?php include "sections/header.php"; ?>
 </div>
+
 <div class="container mt-5">
     <h2 class="mb-4">Listado de Productos</h2>
 
     <!-- Filtro de Categoría -->
     <form method="GET" class="mb-3">
         <label for="category" class="form-label">Filtrar por Categoría:</label>
-        <select name="category" id="category" class="form-select" onchange="this.form.submit()">
-            <option value="Figura Anime" <?php if ($selectedCategory === "Figura Anime") echo "selected"; ?>>Figuras de Anime</option>
-            <option value="Camiseta" <?php if ($selectedCategory === "Camiseta") echo "selected"; ?>>Camisetas</option>
+        <select name="category_id" id="category" class="form-select" onchange="this.form.submit()">
+            <?php while ($category = $categoriesResult->fetch_assoc()): ?>
+                <option value="<?php echo $category['id']; ?>" 
+                    <?php if ($selectedCategoryId == $category['id']) echo "selected"; ?>>
+                    <?php echo $category['name']; ?>
+                </option>
+            <?php endwhile; ?>
         </select>
     </form>
 
@@ -82,15 +100,15 @@ $filteredProducts = array_filter($products, fn($product) => $product['category']
         </tr>
         </thead>
         <tbody>
-        <?php if (!empty($filteredProducts)): ?>
-            <?php foreach ($filteredProducts as $product): ?>
+        <?php if ($productsResult->num_rows > 0): ?>
+            <?php while ($product = $productsResult->fetch_assoc()): ?>
                 <tr>
                     <td><?php echo $product['id']; ?></td>
                     <td><?php echo $product['name']; ?></td>
                     <td><?php echo $product['category']; ?></td>
                     <td><?php echo "$" . number_format($product['price'], 2); ?></td>
                 </tr>
-            <?php endforeach; ?>
+            <?php endwhile; ?>
         <?php else: ?>
             <tr>
                 <td colspan="4">No hay productos disponibles en esta categoría.</td>
@@ -101,5 +119,7 @@ $filteredProducts = array_filter($products, fn($product) => $product['category']
 </div>
 
 <?php include "sections/footer.php"; ?>
+
 </body>
 </html>
+

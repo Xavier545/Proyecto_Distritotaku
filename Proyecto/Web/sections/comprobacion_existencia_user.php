@@ -1,6 +1,5 @@
 <?php
-// Iniciar sesión
-session_start();
+
 
 // Verificar si el usuario está logueado
 if (isset($_SESSION['nickname'])) {
@@ -32,9 +31,6 @@ if (isset($_SESSION['nickname'])) {
         // Terminar la ejecución del script
         exit();
     }
-
-    $stmt->close();
-    $conn->close();
  } //else {
 //     // Si no hay sesión, simplemente terminar la ejecución
 //     exit();

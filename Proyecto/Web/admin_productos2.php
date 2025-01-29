@@ -1,3 +1,27 @@
+<?php
+include "sections/admin_prductos.php";
+include "database_connection.php";
+
+// Consulta las categorías desde la base de datos
+$categoriesQuery = "SELECT id, name FROM CATEGORY";
+$categoriesResult = $conn->query($categoriesQuery);
+
+if (!$categoriesResult) {
+    die("Error al consultar categorías: " . $conn->error);
+}
+
+// Establece la categoría seleccionada (por defecto la primera)
+$selectedCategoryId = $_GET['category_id'] ?? 1;
+
+// Consulta los productos según la categoría seleccionada
+$productsQuery = "SELECT PRODUCT.id, PRODUCT.name, CATEGORY.name AS category, PRODUCT.price, PRODUCT.stock, PRODUCT.manufacturer, PRODUCT.release_date, PRODUCT.image_url FROM PRODUCT JOIN CATEGORY ON PRODUCT.category_id = CATEGORY.id WHERE CATEGORY.id = ?";
+$stmt = $conn->prepare($productsQuery);
+$stmt->bind_param("i", $selectedCategoryId);
+$stmt->execute();
+$productsResult = $stmt->get_result();
+$products = $productsResult->fetch_all(MYSQLI_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,12 +33,25 @@
 </head>
 <body>
 <div>
-    <!--header section starts -->
-    <?php include "sections/header_admin.php"; ?>
+    <!--header section strats -->
+    <?php include "sections/header_admin.php";?>
     <!-- end header section -->
 </div>
 <div class="container mt-5">
     <h2 class="mb-4">Panel de Administración de Productos</h2>
+
+    <!-- Filtro de Categoría -->
+    <form method="GET" class="mb-3">
+        <label for="category" class="form-label">Filtrar por Categoría:</label>
+        <select name="category_id" id="category" class="form-select" onchange="this.form.submit()">
+            <?php while ($category = $categoriesResult->fetch_assoc()): ?>
+                <option value="<?php echo $category['id']; ?>" 
+                    <?php if ($selectedCategoryId == $category['id']) echo "selected"; ?>>
+                    <?php echo $category['name']; ?>
+                </option>
+            <?php endwhile; ?>
+        </select>
+    </form>
 
     <!-- Botón para abrir el modal de añadir producto -->
     <button class="btn btn-primary mb-3" type="button" data-bs-toggle="modal" data-bs-target="#addProductModal">
@@ -38,9 +75,11 @@
                         <div class="form-group mb-3">
                             <label for="category">Categoría</label>
                             <select id="category" name="category" class="form-select" required>
-                                <?php foreach ($categories as $category): ?>
-                                    <option value="<?php echo $category['id']; ?>"><?php echo $category['name']; ?></option>
-                                <?php endforeach; ?>
+                                <?php
+                                $categoriesResult->data_seek(0); // Reset cursor for reuse
+                                while ($category = $categoriesResult->fetch_assoc()): ?>
+                                    <option value="<?php echo $category['id']; ?>"> <?php echo $category['name']; ?> </option>
+                                <?php endwhile; ?>
                             </select>
                         </div>
                         <div class="form-group mb-3">
@@ -73,64 +112,6 @@
         </div>
     </div>
 
-    <!-- Modal para editar producto -->
-    <?php foreach ($products as $product): ?>
-    <div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <form method="POST" action="" enctype="multipart/form-data">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Editar Producto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                        <input type="hidden" name="existing_image" value="<?php echo $product['image_url']; ?>">
-                        <div class="form-group mb-3">
-                            <label for="name">Nombre</label>
-                            <input type="text" class="form-control" name="name" value="<?php echo $product['name']; ?>" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="category">Categoría</label>
-                            <select id="category" name="category" class="form-select" required>
-                                <?php foreach ($categories as $category): ?>
-                                    <option value="<?php echo $category['id']; ?>" <?php echo ($category['id'] == $product['category_id']) ? 'selected' : ''; ?>>
-                                        <?php echo $category['name']; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="price">Precio</label>
-                            <input type="number" class="form-control" name="price" value="<?php echo $product['price']; ?>" step="0.01" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="stock">Stock</label>
-                            <input type="number" class="form-control" name="stock" value="<?php echo $product['stock']; ?>" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="manufacturer">Fabricante</label>
-                            <input type="text" class="form-control" name="manufacturer" value="<?php echo $product['manufacturer']; ?>" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="release_date">Fecha de Lanzamiento</label>
-                            <input type="date" class="form-control" name="release_date" value="<?php echo $product['release_date']; ?>" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="image">Imagen del Producto</label>
-                            <input type="file" class="form-control" name="image" accept="image/*">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" name="edit_product" class="btn btn-primary">Guardar Cambios</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    <?php endforeach; ?>
-
     <h3>Lista de Productos</h3>
     <table class="table table-bordered">
         <thead>
@@ -152,8 +133,8 @@
                     <tr>
                         <td><?php echo $product['id']; ?></td>
                         <td><?php echo $product['name']; ?></td>
-                        <td><?php echo $product['category_name']; ?></td> <!-- Usar category_name -->
-                        <td><?php echo $product['price']; ?></td>
+                        <td><?php echo $product['category']; ?></td>
+                        <td><?php echo "$" . number_format($product['price'], 2); ?></td>
                         <td><?php echo $product['stock']; ?></td>
                         <td><?php echo $product['manufacturer']; ?></td>
                         <td><?php echo $product['release_date']; ?></td>

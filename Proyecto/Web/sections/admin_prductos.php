@@ -1,8 +1,15 @@
 <?php
-// Conectar a la base de datos
-$conn = new mysqli("localhost", "usuario", "contraseña", "nombre_base_datos");
+session_start();
 
-// Verificar la conexión
+// Conexión a la base de datos
+$servername = "db";
+$username = "mysql";
+$password = "mysecret";
+$dbname = "mydb";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Verificar conexión
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }

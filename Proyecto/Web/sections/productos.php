@@ -1,4 +1,9 @@
 <?php
+// Iniciar sesión
+//session_start();
+
+// Incluir el archivo de conexión a la base de datos
+include "sections/comprobacion_existencia_user.php"; // Asegúrate de que este archivo esté correcto
 
 // Conexión a la base de datos
 $servername = "db";
@@ -13,10 +18,20 @@ if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Obtener productos de la base de datos
+// Obtener categorías desde la base de datos
+$categoriesQuery = "SELECT id, name FROM CATEGORY";
+$categoriesResult = $conn->query($categoriesQuery);
+
+// Establecer categoría por defecto
+$selectedCategoryId = $_GET['category_id'] ?? 1;
+
+// Obtener productos de la base de datos según la categoría seleccionada
 $products = [];
-$sql = "SELECT * FROM PRODUCT";
-$result = $conn->query($sql);
+$sql = "SELECT * FROM PRODUCT WHERE category_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $selectedCategoryId);
+$stmt->execute();
+$result = $stmt->get_result();
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $products[] = $row;
@@ -31,10 +46,10 @@ if ($result) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galería de Productos</title>
     <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="path/to/owl.carousel.min.css"> <!-- Asegúrate de incluir la hoja de estilos de Owl Carousel -->
-    <link rel="stylesheet" href="path/to/owl.theme.default.min.css"> <!-- Si quieres usar el tema predeterminado de Owl Carousel -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.theme.default.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="path/to/owl.carousel.min.js"></script> <!-- Asegúrate de incluir el JS de Owl Carousel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/owl.carousel.min.js"></script>
     <style>
         .product-img {
             width: 250px;
@@ -51,48 +66,78 @@ if ($result) {
 </head>
 <body>
 
+<!-- Filtro de Categoría -->
+<div class="container mt-5">
+    <form method="GET" class="mb-3">
+        <label for="category" class="form-label">Filtrar por Categoría:</label>
+        <select name="category_id" id="category" class="form-select" onchange="this.form.submit()">
+            <?php while ($category = $categoriesResult->fetch_assoc()): ?>
+                <option value="<?php echo $category['id']; ?>" 
+                    <?php if ($selectedCategoryId == $category['id']) echo "selected"; ?>>
+                    <?php echo $category['name']; ?>
+                </option>
+            <?php endwhile; ?>
+        </select>
+    </form>
+</div>
+
+<!-- Sección de Productos -->
 <section class="health_section layout_padding">
     <div class="health_carousel-container">
         <h2 class="text-uppercase">
-            Figuras & Precio
+            <?php
+            // Mostrar el título según la categoría seleccionada
+            $categoryTitleQuery = "SELECT name FROM CATEGORY WHERE id = ?";
+            $stmt = $conn->prepare($categoryTitleQuery);
+            $stmt->bind_param("i", $selectedCategoryId);
+            $stmt->execute();
+            $categoryResult = $stmt->get_result();
+            $category = $categoryResult->fetch_assoc();
+            echo htmlspecialchars($category['name']) . " & Precio";
+            ?>
         </h2>
         <div class="carousel-wrap layout_padding2">
             <div class="owl-carousel">
-                <?php foreach ($products as $product): ?>
-                    <div class="item">
-                        <div class="box">
-                            <div class="btn_container">
-                                <a href="#">
-                                    Comprar ahora
-                                </a>
-                            </div>
-                            <div class="img-box">
-                                <?php if (!empty($product['image_url'])): ?>
-                                    <img src="<?php echo $product['image_url']; ?>" alt="Imagen de <?php echo htmlspecialchars($product['name']); ?>" class="product-img">
-                                <?php else: ?>
-                                    <img src="default-image.jpg" alt="Imagen no disponible" class="product-img">
-                                <?php endif; ?>
-                            </div>
-                            <div class="detail-box">
-                                <div class="star_container">
-                                    <!-- Estrellas dinámicas, agregar lógica de valoraciones si es necesario -->
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                <?php if (!empty($products)): ?>
+                    <?php foreach ($products as $product): ?>
+                        <div class="item">
+                            <div class="box">
+                                <div class="btn_container">
+                                    <a href="#">
+                                        Comprar ahora
+                                    </a>
                                 </div>
-                                <div class="text">
-                                    <h6>Precio</h6>
-                                    <h6 class="price">
-                                        <span>€</span>
-                                        <?php echo number_format($product['price'], 2); ?>
-                                    </h6>
+                                <div class="img-box">
+                                    <?php if (!empty($product['image_url'])): ?>
+                                        <img src="<?php echo $product['image_url']; ?>" alt="Imagen de <?php echo htmlspecialchars($product['name']); ?>" class="product-img">
+                                    <?php else: ?>
+                                        <img src="default-image.jpg" alt="Imagen no disponible" class="product-img">
+                                    <?php endif; ?>
+                                </div>
+                                <div class="detail-box">
+                                    <div class="star_container">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="text">
+                                        <h6>Precio</h6>
+                                        <h6 class="price">
+                                            <span>€</span>
+                                            <?php echo number_format($product['price'], 2); ?>
+                                        </h6>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="item">
+                        <h5>No hay productos disponibles en esta categoría.</h5>
                     </div>
-                <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>

@@ -1,15 +1,13 @@
 <?php
 
-
-// Verificar si el usuario está logueado
-if (isset($_SESSION['nickname'])) {
     // Conectar a la base de datos
     $servername = "db";
     $username = "mysql";
     $password = "mysecret";
     $dbname = "mydb";
     $conn = new mysqli($servername, $username, $password, $dbname);
-
+// Verificar si el usuario está logueado
+if (isset($_SESSION['nickname'])) {
     // Verificar conexión
     if ($conn->connect_error) {
         die("Conexión fallida: " . $conn->connect_error);

@@ -1,59 +1,6 @@
 <?php 
 session_start();
-
-$servername = "db";
-$username = "mysql";
-$password = "mysecret";
-$dbname = "mydb";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Procesar el formulario
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $firstname = htmlspecialchars($_POST['firstname']);
-    $lastname = htmlspecialchars($_POST['lastname']);
-    $nickname = htmlspecialchars($_POST['nickname']);
-    $pw = htmlspecialchars($_POST['pw']); // Contraseña en texto plano
-    $email = htmlspecialchars($_POST['email']);
-    $address = htmlspecialchars($_POST['direccion']);
-    $city = htmlspecialchars($_POST['ciudad']);
-    $postal_code = htmlspecialchars($_POST['codigoPostal']);
-    $birthdate = htmlspecialchars($_POST['date']);
-    $rol = "user"; // Establecer el rol como "user" de forma predeterminada
-
-    // Verificar si el nickname ya existe
-    $sql = "SELECT * FROM USER WHERE nickname = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $nickname);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $alert = true;
-
-    if ($result->num_rows > 0) {
-        $name_error = "Lo siento... el nombre de usuario ya existe";
-    } else {
-        // Insertar nuevo usuario con contraseña en texto plano
-        $alert = false;
-        $sql = "INSERT INTO USER (firstname, lastname, nickname, rol, pw, email, address, postal_code, city, birthdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssssssss", $firstname, $lastname, $nickname, $rol, $pw, $email, $address, $postal_code, $city, $birthdate);
-        
-        if ($stmt->execute()) {
-            // Redirigir al login después de registrar
-            header('Location: login.php');
-            exit();
-        } else {
-            echo "Error al registrar el usuario: " . $stmt->error;
-        }
-    }
-
-    $stmt->close();
-}
-
+include "sections/register.php";
 $conn->close();
 ?>
 
@@ -68,19 +15,14 @@ $conn->close();
     <!-- Mobile Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Distrititotaku</title>
-
     <!-- slider stylesheet -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
-
     <!-- font awesome style -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
     <!-- bootstrap core css -->
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-
     <!-- fonts style -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700|Roboto:400,700&display=swap" rel="stylesheet">
-
     <!-- Custom styles for this template -->
     <link href="css/style.css" rel="stylesheet" />
     <!-- responsive style -->

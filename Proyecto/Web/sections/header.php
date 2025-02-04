@@ -1,5 +1,6 @@
 <!-- header section strats -->
 <header class="header_section">
+<script src="js/carritoSideBar.js"></script>
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
           <a class="navbar-brand" href="landing_page.php">
@@ -23,7 +24,7 @@
                   <a class="nav-link" href="about.html"> Sobre </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="productos.php"> Compra Online </a>
+                  <a class="nav-link" href="tienda.php"> Compra Online </a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="news.html"> Noticias </a>
@@ -37,8 +38,8 @@
                 <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
               </form>
               <?php if (isset($_SESSION['nickname'])): ?>
-              <a href="cart.php" class="ml-2">
-                    <img src="images/cart_icon.png" alt="Carrito" style="width: 50px; height: 50px;">
+              <a  class="ml-2" >
+                    <img src="images/cart_icon.png" alt="Carrito"  style="width: 50px; height: 50px;">
               </a>
               <?php endif; ?>
               <div class="login_btn-contanier ml-0 ml-lg-5">

@@ -62,6 +62,23 @@ if ($result) {
             flex-wrap: wrap;
             justify-content: center;
         }
+        .add-product-btn {
+            display: none; /* Ocultar el botón por defecto */
+            background-color: red; /* Color de fondo rojo */
+            color: white; /* Color del texto blanco */
+            border: none; /* Sin borde */
+            padding: 10px 20px; /* Espaciado interno */
+            cursor: pointer; /* Cambiar el cursor al pasar el mouse */
+            transition: background-color 0.3s; /* Transición suave */
+        }
+
+        .item:hover .add-product-btn {
+            display: block; /* Mostrar el botón al pasar el mouse */
+        }
+
+        .item {
+            position: relative; /* Para posicionar el botón */
+        }
     </style>
 </head>
 <body>
@@ -130,6 +147,7 @@ if ($result) {
                                         </h6>
                                     </div>
                                 </div>
+                                <button class="add-product-btn">Añadir Producto</button>
                             </div>
                         </div>
                     <?php endforeach; ?>

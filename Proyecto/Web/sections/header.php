@@ -36,22 +36,27 @@
                 <input type="search" placeholder="Search">
                 <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
               </form>
+              <?php if (isset($_SESSION['nickname'])): ?>
+              <a href="cart.php" class="ml-2">
+                    <img src="images/cart_icon.png" alt="Carrito" style="width: 50px; height: 50px;">
+              </a>
+              <?php endif; ?>
               <div class="login_btn-contanier ml-0 ml-lg-5">
-              <?php if (isset($_SESSION['nickname'])):  ?>
-                        <a href="user.php"><?php echo htmlspecialchars($_SESSION['nickname']);?></a>
+                <?php if (isset($_SESSION['nickname'])): ?>
+                  <a href="user.php"><?php echo htmlspecialchars($_SESSION['nickname']); ?></a>
                 <?php else: ?>
-                <a href="login.php">
-                  <img src="images/user.png" alt="">
-                  <span>
-                    Login
-                  </span>
-                  <?php endif; ?>
-                </a>
+                  <a href="login.php">
+                    <img src="images/user.png" alt="">
+                    <span>
+                      Login
+                    </span>
+                  </a>
+                <?php endif; ?>
               </div>
             </div>
           </div>
 
         </nav>
       </div>
-    </header>
-    <!-- end header section -->
+</header>
+<!-- end header section -->

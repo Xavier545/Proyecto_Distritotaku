@@ -39,7 +39,7 @@
               </form>
               <?php if (isset($_SESSION['nickname'])): ?>
               <a  class="ml-2" >
-                    <img src="images/cart_icon.png" alt="Carrito"  style="width: 50px; height: 50px;">
+              <button class="botonCarrito" onclick="toggleSidebar()"><img src="images/carrito.png" alt="Carrito"  style="width: 35px; height: 35px;">  </button>
               </a>
               <?php endif; ?>
               <div class="login_btn-contanier ml-0 ml-lg-5">

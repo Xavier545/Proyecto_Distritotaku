@@ -37,8 +37,18 @@ if ($result) {
         $products[] = $row;
     }
 }
-?>
 
+
+
+// Función para obtener los productos en la cesta
+function obtenerProductosEnCesta() {
+    // Aquí deberías implementar la lógica para obtener los productos de la cesta del usuario
+    // Por ejemplo, podrías tener una variable de sesión que almacene los productos en la cesta
+    return isset($_SESSION['cesta']) ? $_SESSION['cesta'] : [];
+}
+$productosEnCesta = obtenerProductosEnCesta();
+?>
+<?php include "sections/sidebar.php";?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

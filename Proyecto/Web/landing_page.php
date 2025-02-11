@@ -54,7 +54,7 @@ $productosEnCesta = obtenerProductosEnCesta();
   <?php include "sections/discount.php";?>
   <!-- end discount section -->
   <!-- products section -->
-  <?php include "sections/productos.php";?>
+
   <!-- end products section -->
   <!-- about section -->
   <section class="about_section layout_padding">

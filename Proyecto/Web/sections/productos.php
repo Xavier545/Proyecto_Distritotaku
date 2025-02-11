@@ -1,9 +1,5 @@
 <?php
-// Iniciar sesión
-//session_start();
-
-// Incluir el archivo de conexión a la base de datos
-include "sections/comprobacion_existencia_user.php"; // Asegúrate de que este archivo esté correcto
+include "sections/comprobacion_existencia_user.php";
 
 // Conexión a la base de datos
 $servername = "db";
@@ -38,14 +34,16 @@ if ($result) {
     }
 }
 
-
-
 // Función para obtener los productos en la cesta
 function obtenerProductosEnCesta() {
-    // Aquí deberías implementar la lógica para obtener los productos de la cesta del usuario
-    // Por ejemplo, podrías tener una variable de sesión que almacene los productos en la cesta
     return isset($_SESSION['cesta']) ? $_SESSION['cesta'] : [];
 }
+
+// Inicializar la cesta si no existe
+if (!isset($_SESSION['cesta'])) {
+    $_SESSION['cesta'] = [];
+}
+
 $productosEnCesta = obtenerProductosEnCesta();
 ?>
 <?php include "sections/sidebar.php";?>
@@ -73,21 +71,12 @@ $productosEnCesta = obtenerProductosEnCesta();
             justify-content: center;
         }
         .add-product-btn {
-            display: none; /* Ocultar el botón por defecto */
             background-color: red; /* Color de fondo rojo */
             color: white; /* Color del texto blanco */
             border: none; /* Sin borde */
             padding: 10px 20px; /* Espaciado interno */
             cursor: pointer; /* Cambiar el cursor al pasar el mouse */
             transition: background-color 0.3s; /* Transición suave */
-        }
-
-        .item:hover .add-product-btn {
-            display: block; /* Mostrar el botón al pasar el mouse */
-        }
-
-        .item {
-            position: relative; /* Para posicionar el botón */
         }
     </style>
 </head>
@@ -130,6 +119,11 @@ $productosEnCesta = obtenerProductosEnCesta();
                         <div class="item">
                             <div class="box">
                                 <div class="btn_container">
+                                    <button class="add-product-btn" 
+                                            data-id="<?php echo $product['id']; ?>" 
+                                            data-nombre="<?php echo htmlspecialchars($product['name']); ?>">
+                                        Añadir Producto
+                                    </button>
                                     <a href="#">
                                         Comprar ahora
                                     </a>
@@ -157,7 +151,6 @@ $productosEnCesta = obtenerProductosEnCesta();
                                         </h6>
                                     </div>
                                 </div>
-                                <button class="add-product-btn">Añadir Producto</button>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -186,13 +179,36 @@ $productosEnCesta = obtenerProductosEnCesta();
             nav: true,  // Mostrar los controles de navegación
             dots: true   // Mostrar puntos de navegación
         });
+
+        // Manejar el evento de clic en el botón "Añadir Producto"
+        $('.add-product-btn').on('click', function() {
+            const productId = $(this).data('id');
+            const productName = $(this).data('nombre');
+
+            // Enviar la solicitud AJAX para añadir el producto a la cesta
+            $.ajax({
+                url: 'add_to_cart.php', // Archivo que manejará la adición a la cesta
+                type: 'POST',
+                data: {
+                    product_id: productId,
+                    nombre: productName
+                },
+                success: function(response) {
+                    const result = JSON.parse(response); // Asegúrate de parsear la respuesta JSON
+                    if (result.status === 'success') {
+                        alert(result.message); // Mostrar mensaje de éxito
+                    } else {
+                        alert(result.message); // Mostrar mensaje de error
+                    }
+                },
+                error: function() {
+                    alert('Error al añadir el producto a la cesta.');
+                }
+            });
+        });
     });
 </script>
 
 </body>
 </html>
 
-<?php
-// Cerrar la conexión
-$conn->close();
-?>

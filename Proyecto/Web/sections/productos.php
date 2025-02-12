@@ -45,8 +45,16 @@ if (!isset($_SESSION['cesta'])) {
 }
 
 $productosEnCesta = obtenerProductosEnCesta();
+$cantidadTotalProductos = 0;
+
+// Contar la cantidad total de productos en la cesta
+foreach ($productosEnCesta as $producto) {
+    $cantidadTotalProductos += $producto['cantidad']; // Asumiendo que 'cantidad' es un campo en el array del producto
+}
+
+// Incluir el sidebar después de definir la variable
+include "sections/sidebar.php";
 ?>
-<?php include "sections/sidebar.php";?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -211,4 +219,3 @@ $productosEnCesta = obtenerProductosEnCesta();
 
 </body>
 </html>
-

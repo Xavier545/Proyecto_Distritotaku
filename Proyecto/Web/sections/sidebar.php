@@ -1,3 +1,6 @@
+<?php // Iniciar la sesión
+$productosEnCesta = isset($_SESSION['cesta']) ? $_SESSION['cesta'] : [];
+?>
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h3>Productos en la Cesta (Total: <?php echo count($productosEnCesta); ?>)</h3>

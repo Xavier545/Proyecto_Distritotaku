@@ -1,7 +1,6 @@
-<?php
-// Iniciar sesión
-session_start();
-
+  <?php
+  
+// session_start();
 include "sections/tienda.php";
 
 $stmt->close();

@@ -1,4 +1,4 @@
-<?php
+<?php // Iniciar la sesión
 include "sections/comprobacion_existencia_user.php";
 
 // Conexión a la base de datos
@@ -12,6 +12,36 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Verificar conexión
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
+}
+
+// Manejar la adición de productos a la cesta
+if (isset($_POST['add_to_cart'])) {
+    $productId = $_POST['product_id'];
+    $productName = $_POST['nombre'];
+
+    // Inicializar la cesta si no existe
+    if (!isset($_SESSION['cesta'])) {
+        $_SESSION['cesta'] = [];
+    }
+
+    // Comprobar si el producto ya está en la cesta
+    $found = false;
+    foreach ($_SESSION['cesta'] as &$producto) {
+        if ($producto['id'] == $productId) {
+            $producto['cantidad']++; // Incrementar la cantidad
+            $found = true;
+            break;
+        }
+    }
+
+    // Si el producto no está en la cesta, añadirlo
+    if (!$found) {
+        $_SESSION['cesta'][] = [
+            'id' => $productId,
+            'nombre' => $productName,
+            'cantidad' => 1
+        ];
+    }
 }
 
 // Obtener categorías desde la base de datos
@@ -127,11 +157,11 @@ include "sections/sidebar.php";
                         <div class="item">
                             <div class="box">
                                 <div class="btn_container">
-                                    <button class="add-product-btn" 
-                                            data-id="<?php echo $product['id']; ?>" 
-                                            data-nombre="<?php echo htmlspecialchars($product['name']); ?>">
-                                        Añadir Producto
-                                    </button>
+                                    <form method="POST" action="productos.php">
+                                        <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                                        <input type="hidden" name="nombre" value="<?php echo htmlspecialchars($product['name']); ?>">
+                                        <button type="submit" name="add_to_cart" class="add-product-btn">Añadir Producto</button>
+                                    </form>
                                     <a href="#">
                                         Comprar ahora
                                     </a>
@@ -186,33 +216,6 @@ include "sections/sidebar.php";
             autoplayTimeout: 5000,  // Intervalo entre imágenes
             nav: true,  // Mostrar los controles de navegación
             dots: true   // Mostrar puntos de navegación
-        });
-
-        // Manejar el evento de clic en el botón "Añadir Producto"
-        $('.add-product-btn').on('click', function() {
-            const productId = $(this).data('id');
-            const productName = $(this).data('nombre');
-
-            // Enviar la solicitud AJAX para añadir el producto a la cesta
-            $.ajax({
-                url: 'add_to_cart.php', // Archivo que manejará la adición a la cesta
-                type: 'POST',
-                data: {
-                    product_id: productId,
-                    nombre: productName
-                },
-                success: function(response) {
-                    const result = JSON.parse(response); // Asegúrate de parsear la respuesta JSON
-                    if (result.status === 'success') {
-                        alert(result.message); // Mostrar mensaje de éxito
-                    } else {
-                        alert(result.message); // Mostrar mensaje de error
-                    }
-                },
-                error: function() {
-                    alert('Error al añadir el producto a la cesta.');
-                }
-            });
         });
     });
 </script>

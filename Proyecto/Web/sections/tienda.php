@@ -1,4 +1,5 @@
 <?php
+
 // Incluir el archivo de conexión a la base de datos
 include "sections/comprobacion_existencia_user.php"; // Asegúrate de que este archivo esté correcto
 

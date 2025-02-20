@@ -1,4 +1,4 @@
-<?php // Iniciar la sesión
+<?php
 include "sections/comprobacion_existencia_user.php";
 
 // Conexión a la base de datos
@@ -42,6 +42,10 @@ if (isset($_POST['add_to_cart'])) {
             'cantidad' => 1
         ];
     }
+
+    // Responder con el contenido actualizado del sidebar
+    include "sections/sidebar.php";
+    exit();
 }
 
 // Obtener categorías desde la base de datos
@@ -108,6 +112,9 @@ include "sections/sidebar.php";
             flex-wrap: wrap;
             justify-content: center;
         }
+        .box {
+            position: relative;
+        }
         .add-product-btn {
             background-color: red; /* Color de fondo rojo */
             color: white; /* Color del texto blanco */
@@ -115,6 +122,14 @@ include "sections/sidebar.php";
             padding: 10px 20px; /* Espaciado interno */
             cursor: pointer; /* Cambiar el cursor al pasar el mouse */
             transition: background-color 0.3s; /* Transición suave */
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+        }
+        .box:hover .add-product-btn {
+            display: block;
         }
     </style>
 </head>
@@ -157,7 +172,7 @@ include "sections/sidebar.php";
                         <div class="item">
                             <div class="box">
                                 <div class="btn_container">
-                                    <form method="POST" action="productos.php">
+                                    <form method="POST" class="add-to-cart-form">
                                         <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                                         <input type="hidden" name="nombre" value="<?php echo htmlspecialchars($product['name']); ?>">
                                         <button type="submit" name="add_to_cart" class="add-product-btn">Añadir Producto</button>
@@ -216,6 +231,18 @@ include "sections/sidebar.php";
             autoplayTimeout: 5000,  // Intervalo entre imágenes
             nav: true,  // Mostrar los controles de navegación
             dots: true   // Mostrar puntos de navegación
+        });
+
+        // Manejar el evento de envío del formulario de añadir a la cesta
+        $('.add-to-cart-form').on('submit', function(event) {
+            event.preventDefault(); // Prevenir el envío del formulario
+
+            const form = $(this);
+            const formData = form.serialize();
+
+            $.post('productos.php', formData, function(response) {
+                $('#sidebar').html($(response).find('#sidebar').html()); // Actualizar el contenido del sidebar
+            });
         });
     });
 </script>

@@ -1,5 +1,7 @@
 <?php 
-include"sections/admin_prductos.php"?>
+session_start();
+
+include "sections/admin_prductos.php";?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

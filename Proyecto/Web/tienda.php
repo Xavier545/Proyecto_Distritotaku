@@ -1,10 +1,6 @@
-  <?php
-  
-// session_start();
-include "sections/tienda.php";
-
-$stmt->close();
-$conn->close();
+<?php
+  session_start();
+  include "sections/tienda.php";
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +37,11 @@ $conn->close();
   <?php include "sections/header.php"; ?>
 </div>
 <?php include "sections/productos.php"; ?>
-<?php include "sections/footer.php"; ?>
+<?php 
+  include "sections/footer.php";
+  $stmt->close();
+  $conn->close();
+?>
 <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js"></script>

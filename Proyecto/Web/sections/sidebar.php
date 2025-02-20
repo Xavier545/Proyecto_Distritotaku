@@ -1,4 +1,4 @@
-<?php // Iniciar la sesión
+<?php
 $productosEnCesta = isset($_SESSION['cesta']) ? $_SESSION['cesta'] : [];
 ?>
 <div class="sidebar" id="sidebar">

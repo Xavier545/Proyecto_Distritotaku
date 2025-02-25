@@ -35,7 +35,7 @@
                 <?php if (isset($_SESSION['nickname'])): ?>
                 <?php if ($_SESSION['nickname'] == "carcaj7"): ?>
                 <li class="nav-item">
-                  <a class="nav-link" href="admin.php">admin</a>
+                  <a class="nav-link text-danger"  href="admin.php">admin</a>
                 </li>
                 <?php endif; ?>
                 <?php endif; ?>

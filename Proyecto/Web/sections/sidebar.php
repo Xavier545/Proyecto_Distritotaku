@@ -1,17 +1,19 @@
 <?php
-$productosEnCesta = isset($_SESSION['cesta']) ? $_SESSION['cesta'] : [];
-if(isset ($_REQUEST['product_id'], $_REQUEST['name'])){
-    if(!isset ($_SESSION['carrito'])){
-        $_SESSION['carrito'] = [];
-    } 
+
+if(isset ($_REQUEST['product_id'], $_REQUEST['nombre'])){
+    echo "HOLA";
+     if(!isset ($_SESSION['carrito'])){
+        $carrito = $_SESSION['carrito'] = [];
+    };
     foreach($_SESSION['carrito'] as &$productos){
         if($productos['product_id'] == $_REQUEST['product_id']){
             $productos['cantidad']++;
             return;
         }
     }
-    array_push($_SESSION['carrito'], ['product_id' => $_REQUEST['product_id'], 'name' => $_REQUEST['name'], 'cantidad' => 1]);
+    array_push($_SESSION['carrito'], ['product_id' => $_REQUEST['product_id'], 'nombre' => $_REQUEST['nombre'], 'cantidad' => 1]);
 }
+$productosEnCesta = obtenerProductosEnCesta();
 
 ?>
 <div class="sidebar" id="sidebar">
@@ -22,9 +24,9 @@ if(isset ($_REQUEST['product_id'], $_REQUEST['name'])){
     <div class="sidebar-body">
         <?php if (count($productosEnCesta) > 0): ?>
             <ul>
-                <?php foreach ($$_SESSION['carrito'] as $products): ?>
-                    <li><?php echo htmlspecialchars($products['nombre']); ?> - <?php echo $products['cantidad']; ?></li>
-                <?php endforeach; ?>
+                <?php foreach ($$_SESSION['carrito'] as $products):
+                     echo "<li>" . htmlspecialchars($products['nombre']); $products['cantidad'] . "</li>";
+                endforeach; ?>
                     
 
 

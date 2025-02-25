@@ -172,7 +172,7 @@ include "sections/sidebar.php";
                         <div class="item">
                             <div class="box">
                                 <div class="btn_container">
-                                    <form method="POST" class="add-to-cart-form">
+                                    <form method="POST" class="add-to-cart-form" action="sidebar.php">
                                         <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                                         <input type="hidden" name="nombre" value="<?php echo htmlspecialchars($product['name']); ?>">
                                         <button type="submit" name="add_to_cart" class="add-product-btn">Añadir Producto</button>

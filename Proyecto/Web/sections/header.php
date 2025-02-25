@@ -32,6 +32,13 @@
                 <li class="nav-item">
                   <a class="nav-link" href="contact.html">Contacto</a>
                 </li>
+                <?php if (isset($_SESSION['nickname'])): ?>
+                <?php if ($_SESSION['nickname'] == "carcaj7"): ?>
+                <li class="nav-item">
+                  <a class="nav-link" href="admin.php">admin</a>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
               </ul>
               <form class="form-inline ">
                 <input type="search" placeholder="Search">

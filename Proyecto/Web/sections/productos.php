@@ -1,4 +1,6 @@
 <?php
+ // Asegúrate de que la sesión esté iniciada
+
 include "sections/comprobacion_existencia_user.php";
 
 // Conexión a la base de datos
@@ -14,38 +16,43 @@ if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Manejar la adición de productos a la cesta
+// Manejar la adición de productos al carrito
 if (isset($_POST['add_to_cart'])) {
     $productId = $_POST['product_id'];
     $productName = $_POST['nombre'];
 
-    // Inicializar la cesta si no existe
-    if (!isset($_SESSION['cesta'])) {
-        $_SESSION['cesta'] = [];
+    // Obtener el precio del producto desde la base de datos
+    $priceQuery = "SELECT price FROM PRODUCT WHERE id = ?";
+    $stmt = $conn->prepare($priceQuery);
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+    $priceResult = $stmt->get_result();
+    $productPrice = $priceResult->fetch_assoc()['price'];
+
+    // Inicializar el carrito si no existe
+    if (!isset($_SESSION['carrito'])) {
+        $_SESSION['carrito'] = [];
     }
 
-    // Comprobar si el producto ya está en la cesta
+    // Comprobar si el producto ya está en el carrito
     $found = false;
-    foreach ($_SESSION['cesta'] as &$producto) {
-        if ($producto['id'] == $productId) {
+    foreach ($_SESSION['carrito'] as &$producto) {
+        if ($producto['product_id'] == $productId) {
             $producto['cantidad']++; // Incrementar la cantidad
             $found = true;
             break;
         }
     }
 
-    // Si el producto no está en la cesta, añadirlo
+    // Si el producto no está en el carrito, añadirlo
     if (!$found) {
-        $_SESSION['cesta'][] = [
-            'id' => $productId,
+        $_SESSION['carrito'][] = [
+            'product_id' => $productId,
             'nombre' => $productName,
-            'cantidad' => 1
+            'cantidad' => 1,
+            'precio' => $productPrice // Añadir el precio del producto
         ];
     }
-
-    // Responder con el contenido actualizado del sidebar
-    include "sections/sidebar.php";
-    exit();
 }
 
 // Obtener categorías desde la base de datos
@@ -68,27 +75,21 @@ if ($result) {
     }
 }
 
-// Función para obtener los productos en la cesta
+// Función para obtener los productos en el carrito
 function obtenerProductosEnCesta() {
-    return isset($_SESSION['cesta']) ? $_SESSION['cesta'] : [];
+    return isset($_SESSION['carrito']) ? $_SESSION['carrito'] : [];
 }
 
-// Inicializar la cesta si no existe
-if (!isset($_SESSION['cesta'])) {
-    $_SESSION['cesta'] = [];
+// Inicializar el carrito si no existe
+if (!isset($_SESSION['carrito'])) {
+    $_SESSION['carrito'] = [];
 }
 
 $productosEnCesta = obtenerProductosEnCesta();
-$cantidadTotalProductos = 0;
 
-// Contar la cantidad total de productos en la cesta
-foreach ($productosEnCesta as $producto) {
-    $cantidadTotalProductos += $producto['cantidad']; // Asumiendo que 'cantidad' es un campo en el array del producto
-}
-
-// Incluir el sidebar después de definir la variable
-include "sections/sidebar.php";
+include "sidebar.php";
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -131,6 +132,19 @@ include "sections/sidebar.php";
         .box:hover .add-product-btn {
             display: block;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
@@ -172,7 +186,7 @@ include "sections/sidebar.php";
                         <div class="item">
                             <div class="box">
                                 <div class="btn_container">
-                                    <form method="POST" class="add-to-cart-form" action="sidebar.php">
+                                    <form method="POST" class="add-to-cart-form" action="tienda.php">
                                         <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                                         <input type="hidden" name="nombre" value="<?php echo htmlspecialchars($product['name']); ?>">
                                         <button type="submit" name="add_to_cart" class="add-product-btn">Añadir</button>
@@ -220,6 +234,40 @@ include "sections/sidebar.php";
     </div>
 </section>
 
+<!-- Tabla de Productos Añadidos -->
+<div class="container mt-5">
+    <h3>Productos Añadidos al Carrito</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre del Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php 
+            $productosEnCesta = obtenerProductosEnCesta();
+            if (count($productosEnCesta) > 0): 
+                foreach ($productosEnCesta as $product): 
+            ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($product['nombre']); ?></td>
+                    <td><?php echo $product['cantidad']; ?></td>
+                    <td>€ <?php echo number_format($product['precio'], 2); ?></td>
+                </tr>
+            <?php 
+                endforeach; 
+            else: 
+            ?>
+                <tr>
+                    <td colspan="3">No hay productos en el carrito.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
 <script>
     // Inicia Owl Carousel
     $(document).ready(function(){
@@ -231,18 +279,6 @@ include "sections/sidebar.php";
             autoplayTimeout: 5000,  // Intervalo entre imágenes
             nav: true,  // Mostrar los controles de navegación
             dots: true   // Mostrar puntos de navegación
-        });
-
-        // Manejar el evento de envío del formulario de añadir a la cesta
-        $('.add-to-cart-form').on('submit', function(event) {
-            event.preventDefault(); // Prevenir el envío del formulario
-
-            const form = $(this);
-            const formData = form.serialize();
-
-            $.post('productos.php', formData, function(response) {
-                $('#sidebar').html($(response).find('#sidebar').html()); // Actualizar el contenido del sidebar
-            });
         });
     });
 </script>

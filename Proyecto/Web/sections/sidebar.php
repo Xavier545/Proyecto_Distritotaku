@@ -1,38 +1,37 @@
-<?php
-
-if(isset ($_REQUEST['product_id'], $_REQUEST['nombre'])){
-    echo "HOLA";
-     if(!isset ($_SESSION['carrito'])){
-        $carrito = $_SESSION['carrito'] = [];
-    };
-    foreach($_SESSION['carrito'] as &$productos){
-        if($productos['product_id'] == $_REQUEST['product_id']){
-            $productos['cantidad']++;
-            return;
-        }
-    }
-    array_push($_SESSION['carrito'], ['product_id' => $_REQUEST['product_id'], 'nombre' => $_REQUEST['nombre'], 'cantidad' => 1]);
-}
-$productosEnCesta = obtenerProductosEnCesta();
-
-?>
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <h3>Productos en la Cesta (Total: <?php echo count($productosEnCesta); ?>)</h3>
+        <h3>Productos en la Cesta (Total: <?php echo count(obtenerProductosEnCesta()); ?>)</h3>
         <span class="close-btn" onclick="toggleSidebar()">&times;</span>
     </div>
     <div class="sidebar-body">
-        <?php if (count($productosEnCesta) > 0): ?>
-            <ul>
-                <?php foreach ($$_SESSION['carrito'] as $products):
-                     echo "<li>" . htmlspecialchars($products['nombre']); $products['cantidad'] . "</li>";
-                endforeach; ?>
-                    
-
-
-            </ul>
-        <?php else: ?>
-            <p>No hay productos en la cesta.</p>
-        <?php endif; ?>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Nombre del Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $productosEnCesta = obtenerProductosEnCesta();
+                if (count($productosEnCesta) > 0): 
+                    foreach ($productosEnCesta as $product): 
+                ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($product['nombre']); ?></td>
+                        <td><?php echo $product['cantidad']; ?></td>
+                        <td>€ <?php echo number_format($product['precio'], 2); ?></td>
+                    </tr>
+                <?php 
+                    endforeach; 
+                else: 
+                ?>
+                    <tr>
+                        <td colspan="3">No hay productos en la cesta.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
     </div>
-</div>
+</div>  

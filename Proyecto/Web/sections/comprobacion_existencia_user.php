@@ -14,7 +14,8 @@ if (isset($_SESSION['nickname'])) {
     }
 
     // Comprobar si el usuario existe
-    $nickname = $_SESSION['nickname'];
+    $nickname = $_SESSION['nickname'];  
+    //  TODO  $rol = $_SESSION['rol'];
     $sql = "SELECT id FROM USER WHERE nickname = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $nickname);

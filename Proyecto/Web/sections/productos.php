@@ -38,7 +38,8 @@ if (isset($_POST['add_to_cart'])) {
     $found = false;
     foreach ($_SESSION['carrito'] as &$producto) {
         if ($producto['product_id'] == $productId) {
-            $producto['cantidad']++; // Incrementar la cantidad
+            $producto['cantidad']++;
+            $producto['precio']+=$productPrice; // Incrementar la cantidad
             $found = true;
             break;
         }

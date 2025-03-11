@@ -8,7 +8,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
+// Hola Xavier
 // Recojo los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nickname = htmlspecialchars($_REQUEST['nickname']);

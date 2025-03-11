@@ -33,7 +33,7 @@
                   <a class="nav-link" href="contact.html">Contacto</a>
                 </li>
                 <?php if (isset($_SESSION['nickname'])): ?>
-                <?php if ($_SESSION['nickname'] == "carcaj7"): ?>
+                <?php if ($_SESSION['nickname'] == "carcaj7"): ?> //añadir tanto nickname como el rol al momento de loguearse
                 <li class="nav-item">
                   <a class="nav-link text-danger"  href="admin.php">admin</a>
                 </li>

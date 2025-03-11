@@ -22,6 +22,12 @@
                         <td><?php echo htmlspecialchars($product['nombre']); ?></td>
                         <td><?php echo $product['cantidad']; ?></td>
                         <td>€ <?php echo number_format($product['precio'], 2); ?></td>
+                        <tr><td><form method="POST" class="add-to-cart-form" action="tienda.php">
+                            <button type="sumbit" id="btnSuma" class="bg-success">+</button>
+                            <button id="btnResta" class="bg-danger" >-</button>
+                        </form>
+                    </td>
+                </tr>
                     </tr>
                 <?php 
                     endforeach; 
